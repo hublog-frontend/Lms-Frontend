@@ -14,6 +14,28 @@
 .courses_filter_closeIconContainer:hover {
   background-color: #8c8c8c;
 }
+.courses_createcourse_button {
+  outline: none;
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 22px;
+  text-align: left;
+  height: 36px;
+  color: #ffffff;
+  background: #2160ad;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+@media (min-width: 300px) and (max-width: 460px) {
+  .courses_createcourse_button {
+    line-height: 18px;
+    font-size: 10px;
+  }
+}
 .courses_cards {
   box-shadow: 0 1px 3px 0 #1018281a;
   border: 1px solid #eaecf0;

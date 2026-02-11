@@ -50,9 +50,12 @@ button {
   font-family: inherit;
   cursor: pointer;
   transition: border-color 0.25s;
+  transition:
+    background 0.3s ease,
+    transform 0.2s ease;
 }
 button:hover {
-  border-color: #646cff;
+  transform: translateY(-2px);
 }
 button:focus,
 button:focus-visible {

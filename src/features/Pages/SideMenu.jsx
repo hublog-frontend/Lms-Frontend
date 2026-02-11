@@ -84,6 +84,7 @@ export default function SideMenu() {
       items={renderMenuItems(sideMenuOptions)}
       onClick={handleMenuClick}
       style={{
+        marginTop: "6px",
         backgroundColor: "rgb(91 105 202 / 0%)",
         borderRight: "none",
       }} // 👈 Add this

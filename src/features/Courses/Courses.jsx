@@ -25,8 +25,8 @@ export default function Courses() {
         <>
           <p className="common_heading">Courses</p>
 
-          <Row style={{ marginTop: "20px" }}>
-            <Col span={6}>
+          <Row gutter={12} style={{ marginTop: "20px" }}>
+            <Col xs={15} sm={15} md={15} lg={6}>
               <CommonOutlinedInput
                 label="Search for Course"
                 width="100%"
@@ -54,10 +54,22 @@ export default function Courses() {
                 value={searchValue}
               />
             </Col>
+
+            <Col
+              xs={9}
+              sm={9}
+              md={9}
+              lg={18}
+              style={{ display: "flex", justifyContent: "flex-end" }}
+            >
+              <button className="courses_createcourse_button">
+                Create Course
+              </button>
+            </Col>
           </Row>
 
           <Row gutter={16} style={{ marginTop: "20px" }}>
-            <Col span={8}>
+            <Col xs={24} sm={24} md={24} lg={8}>
               <div
                 className="courses_cards"
                 onClick={() => {
