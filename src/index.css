@@ -1,20 +1,18 @@
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
+  /* color: rgba(255, 255, 255, 0.87); */
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+* {
+  font-family: "Lexend", sans-serif;
+}
+
 a {
-  font-weight: 500;
   color: #646cff;
   text-decoration: inherit;
 }
@@ -22,19 +20,27 @@ a:hover {
   color: #535bf2;
 }
 
-body {
+html,
+body,
+#root {
   margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  font-family: "Lexend", sans-serif !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
 }
-
+p {
+  margin: 0;
+  padding: 0;
+  margin-bottom: 0 !important;
+}
 button {
   border-radius: 8px;
   border: 1px solid transparent;
@@ -42,7 +48,6 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
   cursor: pointer;
   transition: border-color 0.25s;
 }
@@ -51,7 +56,7 @@ button:hover {
 }
 button:focus,
 button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  outline: 0px;
 }
 
 @media (prefers-color-scheme: light) {
@@ -65,4 +70,56 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+
+.common_heading {
+  font-size: 30px;
+  line-height: 38px;
+  text-align: left;
+}
+
+/* antd layout styles */
+.ant-layout-sider-children {
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin; /* Thin scrollbar */
+  /* scrollbar-color: #0d1c40 #0d1c40; */
+}
+.ant-layout-sider {
+  background-repeat: no-repeat !important;
+  background-size: 100% !important;
+  background-position: center !important;
+  transition: all 0.4s ease;
+}
+.ant-menu-light .ant-menu-item {
+  color: #333 !important;
+  background-color: transparent;
+  font-size: 15px !important;
+  font-weight: 400 !important;
+}
+.ant-menu-light .ant-menu-item-selected {
+  background-color: #e9f4fa !important;
+  color: #2091d0 !important;
+  font-weight: 400 !important;
+  border-radius: 6px !important;
+}
+
+.ant-menu-light
+  .ant-menu-item:not(.ant-menu-item-selected):not(
+    .ant-menu-submenu-selected
+  ):hover {
+  font-weight: 400 !important;
+  background-color: #e9f4fa;
+  color: #2091d0 !important;
+}
+/* antd tabs */
+.ant-tabs .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: #2160ad !important;
+  text-shadow: none !important;
+}
+.ant-tabs .ant-tabs-tab:hover {
+  color: #2160ad !important;
+}
+.ant-tabs .ant-tabs-ink-bar {
+  background: #2160ad !important;
 }
