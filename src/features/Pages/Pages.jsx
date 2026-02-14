@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Route, Routes, useNavigate, useLocation } from "react-router-dom";
-import { Layout, Drawer, Button, Grid } from "antd";
+import { Layout, Drawer, Button, Grid, Divider } from "antd";
 import { MenuOutlined } from "@ant-design/icons";
 import ActeLogo from "../../assets/acte-logo.png";
 import Login from "../Login/Login";
@@ -9,6 +9,10 @@ import SideMenu from "./SideMenu";
 import CourseVideos from "../Courses/CourseVideos";
 import Tests from "../Tests/Tests";
 import "./styles.css";
+import { FiUser } from "react-icons/fi";
+import { RiShutDownLine } from "react-icons/ri";
+import { Tooltip } from "antd";
+import Profile from "../Profile/Profile";
 
 const { Sider, Content, Header } = Layout;
 const { useBreakpoint } = Grid;
@@ -43,11 +47,10 @@ export default function Pages() {
       return;
     }
 
-    // Uncomment if you want login protection
-    // if (!token) {
-    //   navigate("/login", { replace: true });
-    //   return;
-    // }
+    if (!token) {
+      navigate("/login", { replace: true });
+      return;
+    }
 
     setShowSidebar(true);
   }, [location.pathname, navigate]);
@@ -70,6 +73,7 @@ export default function Pages() {
           trigger={null}
           collapsible
           collapsed={collapsed}
+          collapsedWidth={72}
           width={280}
           onMouseEnter={() => setCollapsed(false)}
           onMouseLeave={() => setCollapsed(true)}
@@ -87,13 +91,7 @@ export default function Pages() {
           }}
           theme="light"
         >
-          <div
-            style={{
-              padding: "20px 12px 12px 12px",
-              position: "relative",
-              transition: "all 0.3s ease-in-out",
-            }}
-          >
+          <div className="pages_sidebar_innercontainer">
             <img
               src={ActeLogo}
               alt="Logo"
@@ -103,6 +101,47 @@ export default function Pages() {
             />
 
             <SideMenu />
+
+            <div className="pages_sidebar_footer_container">
+              <Divider className="tests_completedtests_divider" />
+              <div className="pages_sidebar_footer_sub_container">
+                <div style={{ display: "flex", gap: "10px" }}>
+                  <div className="pages_sidebar_footer_avatar_div">
+                    <FiUser size={20} color="#333" />
+                  </div>
+
+                  {!collapsed && (
+                    <div
+                      style={{ cursor: "pointer" }}
+                      onClick={() => {
+                        navigate("/profile");
+                      }}
+                    >
+                      <p className="pages_sidebar_login_username">Balaji</p>
+                      <p className="pages_sidebar_login_useremail">
+                        balaji@gmail.com
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                {!collapsed && (
+                  <div>
+                    <Tooltip placement="right" title="Logout">
+                      <RiShutDownLine
+                        size={24}
+                        color="gray"
+                        style={{ cursor: "pointer" }}
+                        onClick={() => {
+                          navigate("/login");
+                          localStorage.clear();
+                        }}
+                      />
+                    </Tooltip>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         </Sider>
       )}
@@ -163,6 +202,7 @@ export default function Pages() {
             <Route element={<Courses />} path="/courses" />
             <Route element={<CourseVideos />} path="/course-videos" />
             <Route element={<Tests />} path="/tests" />
+            <Route element={<Profile />} path="/profile" />
           </Routes>
         </Content>
       </Layout>

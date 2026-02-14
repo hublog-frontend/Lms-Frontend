@@ -44,6 +44,9 @@ importers:
       react-international-phone:
         specifier: ^4.7.0
         version: 4.7.0(react@19.2.4)
+      react-prismazoom:
+        specifier: ^3.3.5
+        version: 3.3.5(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       react-router-dom:
         specifier: ^7.13.0
         version: 7.13.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -1582,6 +1585,12 @@ packages:
 
   react-is@19.2.4:
     resolution: {integrity: sha512-W+EWGn2v0ApPKgKKCy/7s7WHXkboGcsrXE+2joLyVxkbyVQfO3MUEaUQDHoSmb8TFFrSKYa9mw64WZHNHSDzYA==}
+
+  react-prismazoom@3.3.5:
+    resolution: {integrity: sha512-bpXY6Te325Ot11PzWAPrwrxi06CcJeKx9WOQvjdt+msmPOdgJgmvC70Khu+UG9Hur161TeNKNfepwvg0BT/USQ==}
+    peerDependencies:
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
 
   react-refresh@0.18.0:
     resolution: {integrity: sha512-QgT5//D3jfjJb6Gsjxv0Slpj23ip+HtOpnNgnb2S5zU3CB26G/IDPGoy4RJB42wzFE46DRsstbW6tKHoKbhAxw==}
@@ -3317,6 +3326,13 @@ snapshots:
   react-is@18.3.1: {}
 
   react-is@19.2.4: {}
+
+  react-prismazoom@3.3.5(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
+    dependencies:
+      react: 19.2.4
+      react-dom: 19.2.4(react@19.2.4)
+    optionalDependencies:
+      fsevents: 2.3.3
 
   react-refresh@0.18.0: {}
 

@@ -126,3 +126,20 @@ button:focus-visible {
 .ant-tabs .ant-tabs-ink-bar {
   background: #2160ad !important;
 }
+
+/* antd upload styles */
+/* .ant-upload-wrapper .ant-upload-list .ant-upload-list-item {
+  position: absolute !important;
+} */
+.ant-upload-wrapper
+  .ant-upload-list
+  .ant-upload-list-item
+  .ant-upload-list-item-name {
+  color: #000000b4 !important;
+  font-weight: 400 !important;
+}
+.ant-upload-wrapper.ant-upload-picture-circle-wrapper
+  .ant-upload.ant-upload-select:not(.ant-upload-disabled):hover {
+  color: #2160ad !important;
+  border-color: #2160ad !important;
+}

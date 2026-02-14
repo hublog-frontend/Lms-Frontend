@@ -32,6 +32,8 @@ export default function CommonInputField({
       label === "Role Name" ||
       label === "IFSC Code" ||
       label === "Address" ||
+      label === "Description" ||
+      label === "Outcomes" ||
       label === "Attendance Sheet Link"
     ) {
       onChange({ target: { value } });

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Upload, Button, Modal } from "antd";
-import ImgCrop from "antd-img-crop";
 import { UploadOutlined, EyeOutlined, DeleteOutlined } from "@ant-design/icons";
 import { CommonMessage } from "./CommonMessage";
 import "./commonstyles.css";
@@ -95,7 +94,13 @@ export default function ImageUploadCrop({
         }}
         showUploadList={{ showRemoveIcon: false, showPreviewIcon: false }}
         itemRender={(originNode) => (
-          <div style={{ display: "flex", alignItems: "center", width: "100%" }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              width: "100%",
+            }}
+          >
             {originNode}
             {previewImage && (
               <Button
