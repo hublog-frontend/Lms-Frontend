@@ -1,5 +1,5 @@
 import React from "react";
-import { TextField } from "@mui/material";
+import { Input } from "antd";
 import "./commonstyles.css";
 import { capitalizeWords } from "./Validation";
 
@@ -19,11 +19,9 @@ export default function CommonInputField({
   disabled,
   onInput,
   borderLeftNone,
-  rows,
-  multiline = false,
 }) {
   const handleChange = (e) => {
-    let value = e.target.value.replace(/^\s+/, ""); // Removes leading spaces
+    let value = e.target.value.replace(/^\s+/, "");
 
     if (
       label === "Email" ||
@@ -36,76 +34,50 @@ export default function CommonInputField({
       label === "Outcomes" ||
       label === "Attendance Sheet Link"
     ) {
-      onChange({ target: { value } });
+      onChange?.({ target: { value } });
     } else {
       const newValue = capitalizeWords(value);
-      if (onChange) {
-        onChange({ target: { value: newValue } });
-      }
+      onChange?.({ target: { value: newValue } });
     }
   };
 
   return (
-    <div>
-      <TextField
-        className="common_inputfield"
-        label={label}
-        value={value}
-        rows={rows}
-        onChange={handleChange}
-        multiline={multiline}
-        size="small"
-        error={error ? true : false}
-        autoComplete="on"
-        helperText={
-          error ? (
-            <span
-              style={{
-                fontSize: errorFontSize ? errorFontSize : "11px",
-              }}
-            >
-              {label === "Paid Now" ? "" : label}
-              {error}
-            </span>
-          ) : null
+    <div className="common_inputfield_wrapper">
+      {/* ✅ Label */}
+      {label && (
+        <label className="common_inputfields_label">
+          {label} {required && <span style={{ color: "red" }}>*</span>}
+        </label>
+      )}
+
+      {/* ✅ Single line Input */}
+      <Input
+        className={
+          error ? "common_antd_error_inputfield" : "common_antd_inputfield"
         }
-        required={required}
-        disabled={disabled}
-        type={type}
+        ref={ref}
+        value={value}
+        onChange={handleChange}
         onFocus={onFocus}
-        sx={{
-          width: "100%",
-          "& .MuiInputLabel-root": {
-            fontSize: labelFontSize ? labelFontSize : "14px",
-          },
-          "& .MuiInputBase-root.MuiOutlinedInput-root": {
-            borderLeft: "0px",
-            borderTopLeftRadius: borderLeftNone ? "0px" : "4px",
-            borderBottomLeftRadius: borderLeftNone ? "0px" : "4px",
-          },
-          "& fieldset": {
-            borderLeft: borderLeftNone ? "0px" : "", // ✅ this controls the visible border
-          },
-          "& .MuiInputBase-input": {
-            height: height || "auto",
-            boxSizing: "border-box",
-            fontSize: "14px",
-          },
-          "& .Mui-disabled": {
-            backgroundColor: "#f5f5f5", // change background
-            color: "#888", // change text color
-            WebkitTextFillColor: "#888", // needed for iOS/Chrome to change disabled text color
-          },
-        }}
-        inputRef={ref}
-        slotProps={{
-          htmlInput: { maxLength: maxLength },
-          input: {
-            maxLength: { maxLength },
-          },
-        }}
         onInput={onInput}
+        disabled={disabled}
+        maxLength={maxLength}
+        type={type}
+        status={error ? "error" : ""}
+        autoComplete="on"
+        style={{
+          height: height || 32,
+          borderTopLeftRadius: borderLeftNone ? 0 : 6,
+          borderBottomLeftRadius: borderLeftNone ? 0 : 6,
+        }}
       />
+
+      {/* ✅ Error Text */}
+      {error && (
+        <div className="common_inputfields_error_text">
+          {label === "Paid Now" ? "" : label} {error}
+        </div>
+      )}
     </div>
   );
 }

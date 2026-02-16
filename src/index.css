@@ -143,3 +143,75 @@ button:focus-visible {
   color: #2160ad !important;
   border-color: #2160ad !important;
 }
+
+/* antd select field styles */
+.ant-select.ant-select-outlined:not(.ant-select-disabled).ant-select-focused {
+  border-color: #2160ad !important;
+  box-shadow: 0 0 0 2px rgba(9, 78, 117, 0.13) !important;
+}
+
+/* antd datepicker styles */
+.ant-picker-cell-in-view.ant-picker-cell-selected .ant-picker-cell-inner {
+  background: #2160ad !important;
+}
+.ant-picker-outlined:hover {
+  border-color: #2160ad !important;
+}
+.ant-picker-outlined.ant-picker-status-error:not(.ant-picker-disabled):hover {
+  border-color: #ff7875 !important;
+}
+.ant-picker-outlined:focus {
+  border-color: #2160ad !important;
+  box-shadow: 0 0 0 2px #25a17e1e !important;
+}
+.ant-picker-outlined:focus-within {
+  border-color: #2160ad !important;
+  box-shadow: 0 0 0 2px #25a17e1e !important;
+}
+.ant-picker-outlined.ant-picker-status-error:not(
+    .ant-picker-disabled
+  ):focus-within {
+  border-color: #ff7875 !important;
+  box-shadow: 0 0 0 2px rgba(255, 38, 5, 0.06) !important;
+}
+.ant-picker-dropdown
+  .ant-picker-cell-in-view.ant-picker-cell-today
+  .ant-picker-cell-inner::before {
+  border-color: #2160ad !important;
+}
+.ant-picker .ant-picker-input > input {
+  font-size: 13.5px !important;
+  font-weight: 350 !important;
+  color: rgba(0, 0, 0, 0.88) !important;
+}
+/* antd checkbox styles */
+.ant-checkbox-checked .ant-checkbox-inner {
+  background-color: #2160ad;
+  border-color: #2160ad;
+}
+.ant-checkbox-checked:hover .ant-checkbox-inner {
+  background-color: #2160ad !important;
+  border-color: #2160ad !important;
+}
+.ant-checkbox-wrapper:hover .ant-checkbox-inner {
+  border: 1px solid #2160ad !important;
+}
+.ant-checkbox-indeterminate .ant-checkbox-inner:after {
+  background-color: #2160ad !important;
+}
+.ant-checkbox-checked .ant-checkbox-inner {
+  border-color: #2160ad;
+}
+.ant-checkbox-wrapper:hover .ant-checkbox-checked .ant-checkbox-inner {
+  background-color: #2160ad !important;
+}
+.ant-checkbox-wrapper:hover .ant-checkbox-inner,
+.ant-checkbox:hover .ant-checkbox-inner,
+.ant-checkbox-input:focus + .ant-checkbox-inner {
+  border-color: #2160ad;
+}
+.ant-checkbox-wrapper-disabled:hover
+  .ant-checkbox-disabled
+  .ant-checkbox-inner {
+  border-color: #d9d9d9 !important;
+}

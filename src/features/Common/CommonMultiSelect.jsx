@@ -15,6 +15,7 @@ export default function CommonMultiSelect({
   error,
   required,
   options = [],
+  freeSolo = false,
   fontSize,
   labelFontSize,
   optionsFontSize,
@@ -32,13 +33,15 @@ export default function CommonMultiSelect({
   onBlur,
 }) {
   // Map stored ids -> option objects
-  const selectedOptions = options.filter((opt) =>
-    value.includes(String(opt.user_id ?? opt.id))
-  );
+  const selectedOptions = freeSolo
+    ? value
+    : options.filter((opt) => value.includes(String(opt.user_id ?? opt.id)));
 
   // Label resolver
   const getLabel = (option) => {
     if (!option) return "";
+    if (typeof option == "string") return option;
+
     if (showLabelStatus === "Name") return option.name;
     if (showLabelStatus === "Email") return option.email;
     if (showLabelStatus === "Mobile") return option.mobile;
@@ -72,6 +75,7 @@ export default function CommonMultiSelect({
       >
         <Autocomplete
           multiple
+          freeSolo={freeSolo}
           options={options}
           value={selectedOptions}
           disableCloseOnSelect
@@ -80,10 +84,15 @@ export default function CommonMultiSelect({
           groupBy={groupBy}
           getOptionLabel={getLabel}
           onChange={(event, newValue) => {
+            const mapped = newValue.map(
+              (v) =>
+                typeof v === "string"
+                  ? v // solo typed
+                  : String(v.user_id ?? v.id), // selected option
+            );
+
             onChange?.({
-              target: {
-                value: newValue.map((v) => String(v.user_id ?? v.id)),
-              },
+              target: { value: mapped },
             });
           }}
           noOptionsText={

@@ -4,118 +4,116 @@ import "./commonstyles.css";
 import { IoCaretDownSharp } from "react-icons/io5";
 
 export default function CommonAntdMultiSelect({
-  options,
+  options = [],
   label,
-  mandatory,
+  required,
   onChange,
-  value,
+  value = [],
   error,
   disabled,
   loading,
   placeholder,
-  defaultValue,
   allSelectLabel = "All",
+  mode = "multiple",
 }) {
+  const isTagMode = mode === "tags";
+
   const allValues = options.map(
-    (item) => item.user_id ?? item.role_id ?? item.id
+    (item) => item.user_id ?? item.role_id ?? item.id,
   );
 
-  const handleChange = (selectedValues) => {
-    if (selectedValues.includes("all")) {
-      const allSelected = allValues.every((val) => value.includes(val));
-      onChange(allSelected ? [] : allValues);
-    } else {
-      onChange(selectedValues);
-    }
+  const getValue = (item) => item.user_id ?? item.role_id ?? item.id;
+
+  const getLabel = (item) => {
+    if (!item) return "";
+    if (typeof item === "string") return item;
+    if (item.user_name) return `${item.user_id} - ${item.user_name}`;
+    return item.role_name ?? item.name ?? String(item);
   };
 
-  // Determine if "All" should be checked
   const isAllSelected =
-    allValues.every((val) => value.includes(val)) && value.length > 0;
+    !isTagMode &&
+    allValues.length > 0 &&
+    allValues.every((v) => value.includes(v));
+
+  const handleChange = (vals) => {
+    if (!isTagMode && vals.includes("all")) {
+      const allSelected = isAllSelected;
+      onChange(allSelected ? [] : allValues);
+      return;
+    }
+
+    onChange(vals.filter((v) => v !== "all"));
+  };
+
+  // ✅ Build options array (AntD v5 way)
+  const selectOptions = [
+    ...(!isTagMode && options.length > 0
+      ? [
+          {
+            label: (
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <Checkbox checked={isAllSelected} style={{ marginRight: 8 }} />
+                {allSelectLabel}
+              </div>
+            ),
+            value: "all",
+          },
+        ]
+      : []),
+
+    ...options.map((item) => {
+      const val = getValue(item);
+      const lbl = getLabel(item);
+
+      return {
+        label: (
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <Checkbox
+              checked={value.includes(val)}
+              style={{ marginRight: 8 }}
+            />
+            {lbl}
+          </div>
+        ),
+        value: val,
+      };
+    }),
+  ];
 
   return (
     <div style={{ position: "relative" }}>
       {label && (
-        <div style={{ display: "flex", position: "relative" }}>
-          <label className="commonantdmultiselect_label">{label}</label>
-          {mandatory && <p className="commonfield_asterisk">*</p>}
-        </div>
+        <label className="common_inputfields_label">
+          {label} {required && <span style={{ color: "red" }}>*</span>}
+        </label>
       )}
 
       <Select
         className={
-          !error
-            ? "commonMultiselectfield"
-            : "common_antdmultiselectfield_error"
+          !error ? "common_antd_inputfield" : "common_antd_error_inputfield"
         }
         style={{ width: "100%" }}
         suffixIcon={<IoCaretDownSharp color="rgba(0,0,0,0.54)" />}
-        mode="multiple"
-        placeholder={placeholder}
-        disabled={disabled}
-        allowClear
+        mode={mode}
         showSearch
-        value={value} // Only real selected values
-        defaultValue={defaultValue}
+        allowClear
+        disabled={disabled}
         loading={loading}
+        placeholder={placeholder}
+        value={value}
         onChange={handleChange}
         status={error ? "error" : ""}
-        optionLabelProp="label"
+        options={selectOptions} // ✅ new API
+        optionFilterProp="label"
         filterOption={(input, option) =>
-          option.label.toLowerCase().includes(input.toLowerCase())
+          String(option?.label).toLowerCase().includes(input.toLowerCase())
         }
-        dropdownRender={(menu) => menu} // keep default dropdown
-      >
-        {/* All Select Option */}
-        <Select.Option key="all" value="all" label={allSelectLabel}>
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <Checkbox
-              checked={isAllSelected}
-              style={{ marginRight: 8 }}
-              onChange={() => {
-                handleChange(["all"]);
-              }}
-            />
-            {allSelectLabel}
-          </div>
-        </Select.Option>
-
-        {/* Normal Options */}
-        {options.map((item) => {
-          const itemValue = item.user_id ?? item.role_id ?? item.id;
-          const itemLabel = item.user_name
-            ? `${item.user_id} - ${item.user_name}`
-            : item.role_name ?? item.name;
-
-          return (
-            <Select.Option key={itemValue} value={itemValue} label={itemLabel}>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  textWrap: "wrap",
-                }}
-              >
-                <Checkbox
-                  checked={value.includes(itemValue)}
-                  style={{ marginRight: 8 }}
-                  className="common_antdmultiselect_checkbox"
-                />
-                {itemLabel}
-              </div>
-            </Select.Option>
-          );
-        })}
-      </Select>
+        open={mode === "tags" ? false : undefined} // optional
+      />
 
       {error && (
-        <div
-          className={
-            error
-              ? "commoninput_errormessage_activediv"
-              : "commoninput_errormessagediv"
-          }
-        >
+        <div className="commoninput_errormessage_activediv">
           <p className="commonantdmultifield_errortext">
             {label ? label + error : error}
           </p>

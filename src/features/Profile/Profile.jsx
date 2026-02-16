@@ -4,6 +4,7 @@ import ProfileCoverImage from "../../assets/profile_cover.jpeg";
 import "./styles.css";
 import { Tag } from "antd";
 import { Tabs } from "antd";
+import PersonalInfo from "./PersonalInfo";
 
 export default function Profile() {
   return (
@@ -54,7 +55,7 @@ export default function Profile() {
                 {
                   label: "Personal Info",
                   key: "1",
-                  children: <div>Hii</div>,
+                  children: <PersonalInfo />,
                 },
                 {
                   label: "Experiences",
