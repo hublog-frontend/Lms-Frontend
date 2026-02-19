@@ -51,7 +51,7 @@ export default function CommonMuiDatePicker({
           day: {
             sx: {
               "&.Mui-selected": {
-                backgroundColor: "#5b69ca !important", // your custom color
+                backgroundColor: "#2160ad !important", // your custom color
                 color: "#fff", // text color on selected
                 "&:hover": {
                   backgroundColor: "#4a58b0", // hover state
@@ -59,7 +59,7 @@ export default function CommonMuiDatePicker({
               },
             },
             "&.MuiPickersDay-today": {
-              backgroundColor: "#5b69ca", // optional
+              backgroundColor: "#2160ad", // optional
             },
           },
           popper: {
@@ -107,7 +107,7 @@ export default function CommonMuiDatePicker({
                 marginTop: "3px",
               },
               "& .MuiInputLabel-root.Mui-focused": {
-                color: error ? "#d32f2f" : "#5b69ca", // custom focus color
+                color: error ? "#d32f2f" : "#2160ad", // custom focus color
               },
               // value font
               "& .MuiPickersSectionList-section": {
@@ -133,7 +133,7 @@ export default function CommonMuiDatePicker({
                 },
               "& .MuiPickersOutlinedInput-root.Mui-focused .MuiPickersOutlinedInput-notchedOutline":
                 {
-                  borderColor: error ? "#d32f2f" : "#5b69ca !important",
+                  borderColor: error ? "#d32f2f" : "#2160ad !important",
                   borderWidth: 1,
                 },
               "& .Mui-disabled": {

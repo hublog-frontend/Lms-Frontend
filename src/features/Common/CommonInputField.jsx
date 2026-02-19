@@ -39,6 +39,7 @@ export default function CommonInputField({
       label === "Instagram Link" ||
       label === "Github Link" ||
       label === "Portfolio Link" ||
+      label === "Project Link" ||
       label === "Attendance Sheet Link"
     ) {
       onChange?.({ target: { value } });

@@ -19,10 +19,13 @@ import BuildingImage from "../../assets/building.png";
 import { RiGraduationCapFill } from "react-icons/ri";
 import { AiOutlineEdit } from "react-icons/ai";
 import { Divider } from "antd";
+import { Tooltip } from "antd";
 
-export default function Education({ userFulldetails }) {
+export default function Education({ userFulldetails, setUserFullDetails }) {
   const [educationData, setEducationData] = useState([]);
   const [isOpenForm, setIsOpenForm] = useState(false);
+  const [updateEducationId, setUpdateEducationId] = useState(null);
+  const [educationType, setEducationType] = useState("");
   const [educationIdOptions, setEducationIdOptions] = useState([]);
   const [educationId, setEducationId] = useState("");
   const [educationIdError, setEducationIdError] = useState("");
@@ -91,9 +94,6 @@ export default function Education({ userFulldetails }) {
   ];
 
   useEffect(() => {
-    if (userFulldetails?.education.length <= 0) {
-      setEducationId("10th");
-    }
     setEducationData(userFulldetails?.education || []);
   }, [userFulldetails]);
 
@@ -101,6 +101,7 @@ export default function Education({ userFulldetails }) {
     try {
       const response = await getUserById(user_id);
       console.log("get userby id response", response);
+      setUserFullDetails(response?.data?.data || []);
       setEducationData(response?.data?.data?.education || []);
     } catch (error) {
       setEducationData([]);
@@ -117,7 +118,9 @@ export default function Education({ userFulldetails }) {
     const boardNameValidate = addressValidator(boardName);
     const percentageValidate = percentageValidator(percentage);
     const branchIdValidate =
-      educationData.length >= 2 ? selectValidator(branchId) : "";
+      educationData.length >= 2 && educationType == ""
+        ? selectValidator(branchId)
+        : "";
 
     setEducationIdError(educationIdValidate);
     setRegistrationNumberError(registrationNumberValidate);
@@ -143,6 +146,7 @@ export default function Education({ userFulldetails }) {
     const converAsJson = JSON.parse(getloginUserDetails);
 
     const payload = {
+      ...(updateEducationId && { education_id: updateEducationId }),
       user_id: converAsJson?.id,
       education: educationId,
       register_number: registrationNumber,
@@ -151,15 +155,20 @@ export default function Education({ userFulldetails }) {
       board_name: boardName,
       percentage: percentage,
       ...(educationData.length >= 2 && { branch: branchId }),
-      ...(educationData.length >= 2 && { backlog: backlogId == "Yes" ? 1 : 0 }),
-      ...(educationData.length >= 2 && { year_gap: gapId == "Yes" ? 1 : 0 }),
+      ...(educationData.length >= 2 && { backlog: backlogId }),
+      ...(educationData.length >= 2 && { year_gap: gapId }),
+      ...(educationData.length == 3 && { is_pg: true }),
       created_date: formatToBackendIST(today),
     };
 
     try {
       await updateEducation(payload);
       setTimeout(() => {
-        CommonMessage("success", "Education Added");
+        if (updateEducationId) {
+          CommonMessage("success", "Education Updated");
+        } else {
+          CommonMessage("success", "Education Added");
+        }
         formReset();
         getUserByIdData(converAsJson?.id);
       }, 300);
@@ -174,10 +183,55 @@ export default function Education({ userFulldetails }) {
     }
   };
 
+  const handleEdit = (item) => {
+    console.log("education item", item);
+    setIsOpenForm(true);
+    setUpdateEducationId(item.id);
+    setEducationId(item.education);
+    if (item.education == "SSLC") {
+      setEducationType("SSLC");
+      setEducationIdOptions([{ id: "SSLC", name: "SSLC" }]);
+    } else if (item.education == "HSC") {
+      setEducationType("HSC");
+      setEducationIdOptions([
+        { id: "HSC", name: "HSC" },
+        { id: "Diploma", name: "Diploma" },
+      ]);
+    } else if (item.is_pg == 1) {
+      setEducationIdOptions([
+        { id: "MS", name: "MS" },
+        { id: "M.Sc", name: "M.Sc" },
+        { id: "ME/M.Tech", name: "ME/M.Tech" },
+        { id: "MCA", name: "MCA" },
+        { id: "Any Degree", name: "Any Degree" },
+      ]);
+    } else {
+      setEducationIdOptions([
+        { id: "B.Sc", name: "B.Sc" },
+        { id: "B.Com", name: "B.Com" },
+        { id: "BCA", name: "BCA" },
+        { id: "BE/B.Tech", name: "BE/B.Tech" },
+        { id: "Diploma", name: "Diploma" },
+        { id: "Any Degree", name: "Any Degree" },
+      ]);
+    }
+
+    setRegistrationNumber(item.register_number);
+    setPassedOutYear(item.passed_year);
+    setCollegeName(item.college_name);
+    setBoardName(item.board_name);
+    setPercentage(item.percentage);
+    setBranchId(item.branch);
+    setBacklogId(item.backlog);
+    setGapId(item.year_gap);
+  };
+
   const formReset = () => {
     setIsOpenForm(false);
     setButtonLoading(false);
     setValidationTrigger(false);
+    setUpdateEducationId(null);
+    setEducationType("");
     setEducationId("");
     setEducationIdError("");
     setRegistrationNumber("");
@@ -217,7 +271,9 @@ export default function Education({ userFulldetails }) {
                 options={educationIdOptions}
                 onChange={(e) => {
                   setEducationId(e.target.value);
-                  setEducationIdError(selectValidator(e.target.value));
+                  if (validationTrigger) {
+                    setEducationIdError(selectValidator(e.target.value));
+                  }
                 }}
                 value={educationId}
                 error={educationIdError}
@@ -329,7 +385,7 @@ export default function Education({ userFulldetails }) {
               />
             </Col>
 
-            {educationData.length >= 2 ? (
+            {educationData.length >= 2 && educationType == "" ? (
               <>
                 <Col
                   xs={24}
@@ -405,7 +461,7 @@ export default function Education({ userFulldetails }) {
             </button>
             {buttonLoading ? (
               <button
-                style={{ width: "70px" }}
+                style={{ width: updateEducationId ? "90px" : "70px" }}
                 className="coursereviews_rating_modal_btn coursereviews_rating_modal_loading_submitbutton"
               >
                 <CommonSpinner />
@@ -416,7 +472,7 @@ export default function Education({ userFulldetails }) {
                 style={{ width: "max-content" }}
                 onClick={handleSubmit}
               >
-                Add
+                {updateEducationId ? "Update" : "Add"}
               </button>
             )}
           </div>
@@ -431,7 +487,11 @@ export default function Education({ userFulldetails }) {
                     {/* -------left div------------ */}
                     <div className="profilepage_experience_card_name_container">
                       <div className="profilepage_education_card_image_container">
-                        <RiGraduationCapFill size={30} color="#5db2e4" />
+                        <RiGraduationCapFill
+                          size={35}
+                          color="#2092d0c2"
+                          style={{ marginTop: "2px" }}
+                        />
                       </div>
 
                       <div className="profilepage_experience_details_div">
@@ -456,11 +516,16 @@ export default function Education({ userFulldetails }) {
 
                     {/* ----------right div------------ */}
                     <div>
-                      <AiOutlineEdit
-                        size={16}
-                        color="#333333b6"
-                        style={{ cursor: "pointer" }}
-                      />
+                      <Tooltip title="Edit" placement="top">
+                        <AiOutlineEdit
+                          size={16}
+                          color="#333333b6"
+                          style={{ cursor: "pointer" }}
+                          onClick={() => {
+                            handleEdit(item);
+                          }}
+                        />
+                      </Tooltip>
                     </div>
                   </div>
                 </div>
@@ -527,6 +592,7 @@ export default function Education({ userFulldetails }) {
               style={{ width: "max-content" }}
               onClick={() => {
                 setIsOpenForm(true);
+                setEducationIdOptions([{ id: "SSLC", name: "SSLC" }]);
               }}
             >
               <IoMdAdd size={21} /> Add SSLC

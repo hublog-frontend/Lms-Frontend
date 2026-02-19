@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Row, Col } from "antd";
+import { Row, Col, Tooltip, Button } from "antd";
 import CommonInputField from "../Common/CommonInputField";
 import "./styles.css";
 import { Checkbox } from "antd";
@@ -11,7 +11,11 @@ import {
   selectValidator,
   yearValidator,
 } from "../Common/Validation";
-import { getUserById, updateExperience } from "../ApiService/action";
+import {
+  deleteExperience,
+  getUserById,
+  updateExperience,
+} from "../ApiService/action";
 import CommonTextArea from "../Common/CommonTextArea";
 import { CommonMessage } from "../Common/CommonMessage";
 import CommonSpinner from "../Common/CommonSpinner";
@@ -19,8 +23,9 @@ import BuildingImage from "../../assets/building.png";
 import { AiOutlineDelete } from "react-icons/ai";
 import { Divider } from "antd";
 import { IoMdAdd } from "react-icons/io";
+import { Popconfirm } from "antd";
 
-export default function Experience({ userFulldetails }) {
+export default function Experience({ userFulldetails, setUserFullDetails }) {
   const [experienceData, setExperienceData] = useState([]);
   const [isOpenForm, setIsOpenForm] = useState(false);
   const [companyName, setCompanyName] = useState("");
@@ -52,6 +57,7 @@ export default function Experience({ userFulldetails }) {
     try {
       const response = await getUserById(user_id);
       console.log("get userby id response", response);
+      setUserFullDetails(response?.data?.data || []);
       setExperienceData(response?.data?.data?.experience || []);
     } catch (error) {
       setExperienceData([]);
@@ -112,7 +118,7 @@ export default function Experience({ userFulldetails }) {
     };
 
     try {
-      const response = await updateExperience(payload);
+      await updateExperience(payload);
       setTimeout(() => {
         CommonMessage("success", "Experience Added");
         formReset();
@@ -121,6 +127,26 @@ export default function Experience({ userFulldetails }) {
     } catch (error) {
       console.log("error", error);
       setButtonLoading(false);
+      CommonMessage(
+        "error",
+        error?.response?.data?.details ||
+          "Something went wrong. Try again later",
+      );
+    }
+  };
+
+  const handleDelete = async (id) => {
+    const getloginUserDetails = localStorage.getItem("loginUserDetails");
+    const converAsJson = JSON.parse(getloginUserDetails);
+
+    try {
+      await deleteExperience(id);
+      setTimeout(() => {
+        CommonMessage("success", "Experience Deleted");
+        getUserByIdData(converAsJson?.id);
+      }, 300);
+    } catch (error) {
+      console.log("error", error);
       CommonMessage(
         "error",
         error?.response?.data?.details ||
@@ -449,11 +475,24 @@ export default function Experience({ userFulldetails }) {
 
                     {/* -------right div------------ */}
                     <div>
-                      <AiOutlineDelete
-                        size={16}
-                        color="#333333b6"
-                        style={{ cursor: "pointer" }}
-                      />
+                      <Popconfirm
+                        title="Are you sure you want to delete?"
+                        okText="Yes"
+                        cancelText="No"
+                        onConfirm={() => {
+                          handleDelete(item.id);
+                        }}
+                        placement="top"
+                        cancelButtonProps={{
+                          className: "popconfirm-cancel-btn",
+                        }}
+                      >
+                        <AiOutlineDelete
+                          size={16}
+                          color="#333333b6"
+                          style={{ cursor: "pointer" }}
+                        />
+                      </Popconfirm>
                     </div>
                   </div>
                 </div>
@@ -478,7 +517,7 @@ export default function Experience({ userFulldetails }) {
           </div>
         </>
       ) : (
-        <>
+        <div style={{ padding: 24 }}>
           <CommonNodataFound message="Please add your experience" />
           <div className="profilepages_personalinfo_button_container">
             <button
@@ -491,7 +530,7 @@ export default function Experience({ userFulldetails }) {
               <IoMdAdd size={21} /> Add Experience
             </button>
           </div>
-        </>
+        </div>
       )}
     </div>
   );

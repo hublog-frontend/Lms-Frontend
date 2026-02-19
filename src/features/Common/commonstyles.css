@@ -85,11 +85,11 @@
   border-color: rgba(128, 128, 128, 0.712) !important;
 }
 .common_selectfield .MuiOutlinedInput-root.Mui-focused fieldset {
-  border-color: #5b69ca !important;
+  border-color: #2160ad !important;
   border-width: 1px !important;
 }
 .common_selectfield .MuiInputLabel-root.Mui-focused {
-  color: #5b69ca !important;
+  color: #2160ad !important;
 }
 .common_selectfield .MuiInputLabel-root.Mui-error.Mui-focused {
   color: #d32f2f !important;
@@ -130,7 +130,7 @@
   color: rgba(0, 0, 0, 0.6) !important;
 }
 .ant-btn-variant-solid {
-  background: #5b69ca !important;
+  background: #2160ad !important;
 }
 /* Red placeholder when error exists */
 .common_singledatepicker_error .ant-picker-input > input::placeholder {
@@ -160,11 +160,12 @@
   border-radius: 5px !important;
 }
 .commontextarea:hover {
-  border-color: rgba(128, 128, 128, 0.712) !important;
+  border-color: #2160ad !important;
   box-shadow: none !important;
 }
 .commontextarea:focus {
   border-color: #2160ad !important;
+  box-shadow: 0 0 0 2px rgba(9, 78, 117, 0.13) !important;
   box-shadow: none !important;
 }
 /* common table styles */
@@ -221,8 +222,8 @@
 }
 .common_rangepicker_applybutton {
   border-radius: 6px;
-  border: 1px solid #5b69ca;
-  background-color: #5b69ca;
+  border: 1px solid #2160ad;
+  background-color: #2160ad;
   padding: 5px 18px;
   display: flex;
   justify-content: center;
@@ -239,26 +240,26 @@
   flex-wrap: wrap;
 }
 .rdrStartEdge {
-  background: #5b69ca !important;
+  background: #2160ad !important;
 }
 .rdrInRange {
-  background: #5b69ca !important;
+  background: #2160ad !important;
 }
 .rdrEndEdge {
-  background: #5b69ca !important;
+  background: #2160ad !important;
 }
 /* Change the border color of the selected range preview */
 .rdrDayStartPreview,
 .rdrDayInPreview,
 .rdrDayEndPreview {
-  border-color: #5b69ca !important; /* Change to any color you like */
+  border-color: #2160ad !important; /* Change to any color you like */
 }
 .rdrDateDisplayItem input {
   height: 25px !important;
   font-size: 12px !important;
 }
 .rdrDateDisplayItemActive {
-  border-color: #5b69ca !important;
+  border-color: #2160ad !important;
 }
 .rdrMonthAndYearWrapper {
   height: 46px !important;
@@ -294,7 +295,7 @@
 }
 /* current date */
 .rdrDayToday .rdrDayNumber span {
-  border: 1px solid #5b69ca;
+  border: 1px solid #2160ad;
   padding: 4px;
   display: flex;
   align-items: center;
@@ -353,18 +354,18 @@
   border-radius: 6px !important;
 }
 .signaturepad_clearbutton:hover {
-  color: #5b69ca !important;
-  border-color: #5b69ca !important;
+  color: #2160ad !important;
+  border-color: #2160ad !important;
 }
 .signaturepad_downloadbutton {
-  background-color: #5b69ca;
+  background-color: #2160ad;
   color: #fff;
   border-radius: 6px !important;
   font-size: 13px !important;
-  border-color: #5b69ca !important;
+  border-color: #2160ad !important;
 }
 .signaturepad_downloadbutton:hover {
-  background-color: #5b69ca !important;
+  background-color: #2160ad !important;
   color: #fff !important;
   opacity: 0.7;
 }
@@ -377,7 +378,7 @@
 }
 .sessionmodal_okbutton {
   color: #fff;
-  background-color: #5b69ca;
+  background-color: #2160ad;
   box-shadow: 0 2px 0 rgba(88, 5, 255, 0.06);
   font-size: 14px;
   height: 30px;
@@ -386,8 +387,8 @@
   margin-top: 10px;
 }
 .sessionmodal_okbutton:hover {
-  background-color: #5b69ca !important;
-  border-color: #5b69ca !important;
+  background-color: #2160ad !important;
+  border-color: #2160ad !important;
   color: #fff !important;
   opacity: 0.7;
 }
@@ -397,8 +398,8 @@
   font-size: 11px !important;
 }
 .imgcrop_uploadbutton:hover {
-  border-color: #5b69ca !important;
-  color: #5b69ca !important;
+  border-color: #2160ad !important;
+  color: #2160ad !important;
 }
 
 /* common mui custom datepicker styles */
@@ -482,8 +483,8 @@
   align-items: center;
 }
 .common_deletemodal_cancelbutton:hover {
-  border-color: #5b69ca !important;
-  color: #5b69ca !important;
+  border-color: #2160ad !important;
+  color: #2160ad !important;
 }
 .common_deletemodal_deletebutton {
   width: 85px;
@@ -561,11 +562,11 @@
 .ant-select-dropdown
   .ant-select-item-option-selected:not(.ant-select-item-option-disabled)
   .ant-select-item-option-state {
-  color: #5b69ca !important;
+  color: #2160ad !important;
 }
 .common_antdmultiselect_checkbox .ant-checkbox-checked .ant-checkbox-inner {
-  background-color: #5b69ca !important;
-  border-color: #5b69ca !important;
+  background-color: #2160ad !important;
+  border-color: #2160ad !important;
 }
 
 /* donut chart styles */

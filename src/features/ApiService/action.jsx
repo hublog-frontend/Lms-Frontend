@@ -198,9 +198,60 @@ export const updateExperience = async (payload) => {
   }
 };
 
+export const deleteExperience = async (experience_id) => {
+  try {
+    const response = await api.delete(
+      `/api/deleteExperience?experience_id=${experience_id}`,
+    );
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const updateEducation = async (payload) => {
   try {
     const response = await api.post(`/api/updateEducation`, payload);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const updateProject = async (payload) => {
+  try {
+    const response = await api.post(`/api/updateProject`, payload);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const deleteProject = async (project_id) => {
+  try {
+    const response = await api.delete(
+      `/api/deleteProject?project_id=${project_id}`,
+    );
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const updateCertificate = async (payload) => {
+  try {
+    const response = await api.post(`/api/updateCertificate`, payload);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const deleteCertificate = async (certificate_id) => {
+  try {
+    const response = await api.delete(
+      `/api/deleteCertificate?certificate_id=${certificate_id}`,
+    );
     return response;
   } catch (error) {
     throw error;

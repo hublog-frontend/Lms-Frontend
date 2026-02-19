@@ -229,15 +229,16 @@
   color: #667085;
   font-size: 14px;
 }
+
 /* education styles */
 .profilepage_education_card_image_container {
   height: 100%;
-  min-width: 72px;
-  max-width: 10%;
+  padding: 4px 6px 0px 6px;
   display: flex;
-  align-items: center;
   justify-content: center;
-  border-radius: 50%;
   background-color: #eaecf0;
-  height: 72px;
+}
+.popconfirm-cancel-btn:hover {
+  color: #2160ad !important;
+  border-color: #2160ad !important;
 }

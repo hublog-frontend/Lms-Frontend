@@ -13,6 +13,7 @@ import { getUserById } from "../ApiService/action";
 
 export default function Profile() {
   const [userFulldetails, setUserFullDetails] = useState(null);
+  const [userName, setUserName] = useState("");
 
   useEffect(() => {
     getUserByIdData();
@@ -22,6 +23,7 @@ export default function Profile() {
     const getloginUserDetails = localStorage.getItem("loginUserDetails");
     const converAsJson = JSON.parse(getloginUserDetails);
     console.log("getloginUserDetails", converAsJson);
+    setUserName(converAsJson?.user_name);
 
     try {
       const response = await getUserById(converAsJson?.id);
@@ -46,9 +48,11 @@ export default function Profile() {
 
             <div className="profile_avatar_container">
               <div className="profilepage_avatar">
-                <h6 className="profilepage_avatar_name_first_letter">B</h6>
+                <h6 className="profilepage_avatar_name_first_letter">
+                  {userName.charAt(0)}
+                </h6>
               </div>
-              <p className="profilepage_name_text">Balaji</p>
+              <p className="profilepage_name_text">{userName}</p>
               <div className="profilepage_studenttag">
                 <p>Student</p>
               </div>
@@ -81,27 +85,52 @@ export default function Profile() {
                 {
                   label: "Personal Info",
                   key: "1",
-                  children: <PersonalInfo userFulldetails={userFulldetails} />,
+                  children: (
+                    <PersonalInfo
+                      userFulldetails={userFulldetails}
+                      setUserFullDetails={setUserFullDetails}
+                    />
+                  ),
                 },
                 {
                   label: "Experiences",
                   key: "2",
-                  children: <Experience userFulldetails={userFulldetails} />,
+                  children: (
+                    <Experience
+                      userFulldetails={userFulldetails}
+                      setUserFullDetails={setUserFullDetails}
+                    />
+                  ),
                 },
                 {
                   label: "Education",
                   key: "3",
-                  children: <Education userFulldetails={userFulldetails} />,
+                  children: (
+                    <Education
+                      userFulldetails={userFulldetails}
+                      setUserFullDetails={setUserFullDetails}
+                    />
+                  ),
                 },
                 {
                   label: "Projects",
                   key: "4",
-                  children: <Projects />,
+                  children: (
+                    <Projects
+                      userFulldetails={userFulldetails}
+                      setUserFullDetails={setUserFullDetails}
+                    />
+                  ),
                 },
                 {
                   label: "Certifications",
                   key: "5",
-                  children: <Certificates />,
+                  children: (
+                    <Certificates
+                      userFulldetails={userFulldetails}
+                      setUserFullDetails={setUserFullDetails}
+                    />
+                  ),
                 },
               ]}
             />
