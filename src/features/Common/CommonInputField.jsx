@@ -5,11 +5,14 @@ import { capitalizeWords } from "./Validation";
 
 export default function CommonInputField({
   label,
+  placeholder,
   value,
   onChange,
   error,
   required,
   height,
+  prefix,
+  suffix,
   labelFontSize,
   errorFontSize,
   ref,
@@ -32,6 +35,10 @@ export default function CommonInputField({
       label === "Address" ||
       label === "Description" ||
       label === "Outcomes" ||
+      label === "Linkedin Link" ||
+      label === "Instagram Link" ||
+      label === "Github Link" ||
+      label === "Portfolio Link" ||
       label === "Attendance Sheet Link"
     ) {
       onChange?.({ target: { value } });
@@ -46,7 +53,7 @@ export default function CommonInputField({
       {/* ✅ Label */}
       {label && (
         <label className="common_inputfields_label">
-          {label} {required && <span style={{ color: "red" }}>*</span>}
+          {label} {required && <span style={{ color: "#d32f2f" }}>*</span>}
         </label>
       )}
 
@@ -56,8 +63,11 @@ export default function CommonInputField({
           error ? "common_antd_error_inputfield" : "common_antd_inputfield"
         }
         ref={ref}
+        placeholder={placeholder}
         value={value}
         onChange={handleChange}
+        prefix={prefix}
+        suffix={suffix}
         onFocus={onFocus}
         onInput={onInput}
         disabled={disabled}

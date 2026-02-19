@@ -1,12 +1,38 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Row, Col, Progress } from "antd";
 import ProfileCoverImage from "../../assets/profile_cover.jpeg";
 import "./styles.css";
 import { Tag } from "antd";
 import { Tabs } from "antd";
 import PersonalInfo from "./PersonalInfo";
+import Experience from "./Experience";
+import Projects from "./Projects";
+import Certificates from "./Certificates";
+import Education from "./Education";
+import { getUserById } from "../ApiService/action";
 
 export default function Profile() {
+  const [userFulldetails, setUserFullDetails] = useState(null);
+
+  useEffect(() => {
+    getUserByIdData();
+  }, []);
+
+  const getUserByIdData = async () => {
+    const getloginUserDetails = localStorage.getItem("loginUserDetails");
+    const converAsJson = JSON.parse(getloginUserDetails);
+    console.log("getloginUserDetails", converAsJson);
+
+    try {
+      const response = await getUserById(converAsJson?.id);
+      console.log("get userby id response", response);
+      setUserFullDetails(response?.data?.data || null);
+    } catch (error) {
+      setUserFullDetails(null);
+      console.log("get user by id error", error);
+    }
+  };
+
   return (
     <div>
       <p className="common_heading">Profile</p>
@@ -55,27 +81,27 @@ export default function Profile() {
                 {
                   label: "Personal Info",
                   key: "1",
-                  children: <PersonalInfo />,
+                  children: <PersonalInfo userFulldetails={userFulldetails} />,
                 },
                 {
                   label: "Experiences",
                   key: "2",
-                  children: <div>Hii</div>,
+                  children: <Experience userFulldetails={userFulldetails} />,
                 },
                 {
                   label: "Education",
                   key: "3",
-                  children: <div>Hii</div>,
+                  children: <Education userFulldetails={userFulldetails} />,
                 },
                 {
                   label: "Projects",
                   key: "4",
-                  children: <div>Hii</div>,
+                  children: <Projects />,
                 },
                 {
                   label: "Certifications",
                   key: "5",
-                  children: <div>Hii</div>,
+                  children: <Certificates />,
                 },
               ]}
             />

@@ -79,7 +79,7 @@ export default function CourseDiscussion({ reviewsData, courseDetails }) {
       <div className="coursediscussion_commentfield_container">
         <div style={{ width: "100%" }}>
           <CommonInputField
-            label="Comment"
+            placeholder="Comment"
             multiline={true}
             onChange={(e) => {
               setComments(e.target.value);

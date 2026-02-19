@@ -591,7 +591,9 @@ export default function CommonCountryCodeSelect({
                           alt={selectedCountry.name}
                         />
                       </InputAdornment>
-                      <p style={{ color: "red" }}>{selectedCountry.phone}</p>
+                      <p style={{ color: "#d32f2f" }}>
+                        {selectedCountry.phone}
+                      </p>
                     </div>
                   ) : null,
                   autoComplete: "new-password", // disable autocomplete and autofill

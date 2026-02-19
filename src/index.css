@@ -158,7 +158,7 @@ button:focus-visible {
   border-color: #2160ad !important;
 }
 .ant-picker-outlined.ant-picker-status-error:not(.ant-picker-disabled):hover {
-  border-color: #ff7875 !important;
+  border-color: #d32f2f !important;
 }
 .ant-picker-outlined:focus {
   border-color: #2160ad !important;
@@ -171,7 +171,7 @@ button:focus-visible {
 .ant-picker-outlined.ant-picker-status-error:not(
     .ant-picker-disabled
   ):focus-within {
-  border-color: #ff7875 !important;
+  border-color: #d32f2f !important;
   box-shadow: 0 0 0 2px rgba(255, 38, 5, 0.06) !important;
 }
 .ant-picker-dropdown

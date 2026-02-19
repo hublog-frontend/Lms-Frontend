@@ -102,6 +102,9 @@
 .profilepage_tabs.ant-tabs .ant-tabs-tab + .ant-tabs-tab {
   color: gray !important;
 }
+.profilepage_tabs.ant-tabs .ant-tabs-tab {
+  color: gray !important;
+}
 .profilepage_personalinfo_main_container {
   border: 1px solid #eaecf0;
   border-radius: 8px;
@@ -125,6 +128,9 @@
 .profilepage_personalinfo_dragger.ant-upload-wrapper .ant-upload-drag {
   background-color: transparent !important;
 }
+.profilepage_personalinfo_dragger.ant-upload-wrapper .ant-upload-drag:hover {
+  border-color: #2160ad !important;
+}
 .profilepage_personalinfo_dragger_icon_container {
   width: 40px;
   height: 40px;
@@ -143,4 +149,95 @@
 .profilepage_personalinfo_dragger .ant-upload-hint {
   font-weight: 500 !important;
   font-size: 12px !important;
+}
+.profilepage_resume_label {
+  font-weight: 350 !important;
+  margin-bottom: 6px !important;
+}
+.profilepage_resumeupload_button {
+  padding: 21px 20px;
+  font-weight: 350 !important;
+}
+.profilepage_resumeupload_button:hover {
+  border-color: #2160ad !important;
+  color: #2160ad !important;
+}
+.profilepages_personalinfo_button_container {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+.profilepage_experience_startandenddate_heading {
+  font-weight: 500;
+  font-size: 16px;
+  color: #101828;
+  margin-bottom: 12px !important;
+}
+.profilepage_resume_zoom_buttons:hover {
+  color: #2160ad !important;
+  border-color: #2160ad !important;
+}
+/* experience styles */
+.profilepage_experience_card {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+.profilepage_experience_card_name_container {
+  display: flex;
+  gap: 8px;
+  max-width: 90%;
+}
+.profilepage_experience_card_image_container {
+  height: 100%;
+  min-width: 72px;
+  max-width: 10%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+.profilepage_experience_card_image {
+  width: 48px;
+  height: 48px;
+}
+.profilepage_experience_details_div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.profilepage_experience_designation {
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 30px;
+  color: #101828;
+}
+.profilepage_experience_company_name {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  color: #101828;
+}
+.profilepage_experience_location_div {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+.profilepage_experience_location_details {
+  color: #667085;
+  font-size: 14px;
+}
+/* education styles */
+.profilepage_education_card_image_container {
+  height: 100%;
+  min-width: 72px;
+  max-width: 10%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: #eaecf0;
+  height: 72px;
 }

@@ -44,7 +44,7 @@ const CommonImageUpload = ({
         <div style={{ display: "flex" }}>
           <label className="commonfield_label">{label}</label>
           {mandatory ? (
-            <p style={{ color: "red", marginLeft: "4px" }}>*</p>
+            <p style={{ color: "#d32f2f", marginLeft: "4px" }}>*</p>
           ) : (
             ""
           )}

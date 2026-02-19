@@ -26,6 +26,7 @@ export default function CommonSelectField({
   borderLeftNone,
   onFocus,
   onBlur,
+  allowClear = true,
 }) {
   // ✅ label resolver (same logic you had)
   const getLabel = (option) => {
@@ -69,15 +70,17 @@ export default function CommonSelectField({
       {/* ✅ Label */}
       {label && (
         <label className="common_inputfields_label">
-          {label} {required && <span style={{ color: "red" }}>*</span>}
+          {label} {required && <span style={{ color: "#d32f2f" }}>*</span>}
         </label>
       )}
 
       {/* ✅ Select */}
       <Select
-        className="common_antd_inputfield"
+        className={
+          error ? "common_antd_error_inputfield" : "common_antd_inputfield"
+        }
         showSearch
-        allowClear={!disableClearable}
+        allowClear={allowClear}
         value={value || undefined}
         disabled={disabled}
         options={groupedOptions}

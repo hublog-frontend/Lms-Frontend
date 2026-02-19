@@ -85,7 +85,7 @@ export default function CommonAntdMultiSelect({
     <div style={{ position: "relative" }}>
       {label && (
         <label className="common_inputfields_label">
-          {label} {required && <span style={{ color: "red" }}>*</span>}
+          {label} {required && <span style={{ color: "#d32f2f" }}>*</span>}
         </label>
       )}
 

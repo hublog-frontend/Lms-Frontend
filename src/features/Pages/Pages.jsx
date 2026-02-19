@@ -39,6 +39,23 @@ export default function Pages() {
   };
 
   useEffect(() => {
+    //handle navigate to login page when token expire
+    const handleTokenExpire = () => {
+      localStorage.clear();
+      navigate("/login");
+    };
+
+    window.addEventListener("tokenExpireUpdated", handleTokenExpire);
+
+    // Initial load
+    // handleTokenExpire();
+
+    return () => {
+      window.removeEventListener("tokenExpireUpdated", handleTokenExpire);
+    };
+  }, []);
+
+  useEffect(() => {
     const token = localStorage.getItem("AccessToken");
     const path = location.pathname;
 

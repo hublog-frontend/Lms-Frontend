@@ -13,6 +13,16 @@
   border-color: #2160ad !important;
   box-shadow: 0 0 0 2px rgba(9, 78, 117, 0.13) !important;
 }
+.ant-input-outlined:focus-within {
+  border-color: #2160ad !important;
+  box-shadow: 0 0 0 2px rgba(9, 78, 117, 0.13) !important;
+}
+/* normal input */
+.ant-input::placeholder {
+  color: #667085 !important;
+  opacity: 1; /* required for Firefox */
+}
+
 .common_antd_error_inputfield {
   height: 44px !important;
   border-color: #d32f2f !important;
@@ -24,6 +34,13 @@
   border-color: #d32f2f !important;
   box-shadow: 0 0 0 2px #d32f2f10 !important;
 }
+.common_antd_error_inputfield.ant-select.ant-select-outlined:not(
+    .ant-select-disabled
+  ).ant-select-focused:not(.ant-select-disabled) {
+  border-color: #d32f2f !important;
+  box-shadow: 0 0 0 2px #d32f2f10 !important;
+}
+
 .common_inputfields_label {
   color: rgba(0, 0, 0, 0.88);
   font-size: 13.5px;
@@ -147,7 +164,7 @@
   box-shadow: none !important;
 }
 .commontextarea:focus {
-  border-color: #5b69ca !important;
+  border-color: #2160ad !important;
   box-shadow: none !important;
 }
 /* common table styles */
@@ -376,14 +393,6 @@
 }
 
 /* imagecrop styles */
-.imgcrop_label {
-  position: absolute;
-  top: -48%;
-}
-.imgcrop_label_withvalue {
-  position: absolute;
-  top: -26%;
-}
 .imgcrop_uploadbutton {
   font-size: 11px !important;
 }

@@ -72,10 +72,7 @@ export default function ImageUploadCrop({
 
   return (
     <div style={{ position: "relative" }}>
-      <p
-        className={value ? "imgcrop_label_withvalue" : "imgcrop_label"}
-        style={{ fontSize: "13px" }}
-      >
+      <p style={{ fontSize: "13px" }}>
         {label} {required && <span style={{ color: "#d32f2f" }}>*</span>}
       </p>
 

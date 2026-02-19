@@ -159,6 +159,33 @@ export const confirmPasswordValidator = (password, confirmPassword) => {
   return error;
 };
 
+export const monthValidator = (month) => {
+  const value = parseInt(month);
+  let error = "";
+
+  if (!value || value.length <= 0) error = " is required";
+  else if (value >= 13) error = " must be between 1 and 12";
+
+  return error;
+};
+
+export const yearValidator = (year) => {
+  const value = parseInt(year);
+  const currentYear = new Date().getFullYear();
+
+  if (!value) return " is required";
+
+  if (!/^\d{4}$/.test(value)) {
+    return " must be 4-digit";
+  }
+
+  if (Number(value) > currentYear) {
+    return ` must not be greater than ${currentYear}`;
+  }
+
+  return ""; // valid
+};
+
 export const addAppandUrlTime = (time1, time2) => {
   // Split the time values into hours and minutes
   const [hours1, minutes1] = time1.split(":");

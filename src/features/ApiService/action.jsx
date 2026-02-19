@@ -169,3 +169,40 @@ export const getReviews = async (course_id) => {
     throw error;
   }
 };
+
+// profile api's
+export const updateProfile = async (payload) => {
+  try {
+    const response = await api.post(`/api/updateUser`, payload);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getUserById = async (user_id) => {
+  try {
+    const response = await api.get(`/api/getUserById?user_id=${user_id}`);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const updateExperience = async (payload) => {
+  try {
+    const response = await api.post(`/api/updateExperience`, payload);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const updateEducation = async (payload) => {
+  try {
+    const response = await api.post(`/api/updateEducation`, payload);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
