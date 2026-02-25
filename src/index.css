@@ -81,6 +81,12 @@ button:focus-visible {
   text-align: left;
 }
 
+@media (min-width: 300px) and (max-width: 460px) {
+  .common_heading {
+    font-size: 20px;
+  }
+}
+
 /* antd layout styles */
 .ant-layout-sider-children {
   overflow-y: auto;
@@ -94,11 +100,18 @@ button:focus-visible {
   background-position: center !important;
   transition: all 0.4s ease;
 }
+/* remove transition from menu item + inner content */
+.ant-menu-item,
+.ant-menu-item * {
+  transition: none !important;
+}
+
 .ant-menu-light .ant-menu-item {
   color: #333 !important;
   background-color: transparent;
   font-size: 15px !important;
   font-weight: 400 !important;
+  transition: none !important;
 }
 .ant-menu-light .ant-menu-item-selected {
   background-color: #e9f4fa !important;

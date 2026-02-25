@@ -14,6 +14,17 @@
 .courses_filter_closeIconContainer:hover {
   background-color: #8c8c8c;
 }
+.courses_createmodule_button_container {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+@media (min-width: 300px) and (max-width: 460px) {
+  .courses_createmodule_button_container {
+    justify-content: flex-start;
+    margin-top: 20px;
+  }
+}
 .courses_createcourse_button {
   outline: none;
   cursor: pointer;
@@ -33,7 +44,7 @@
 @media (min-width: 300px) and (max-width: 460px) {
   .courses_createcourse_button {
     line-height: 18px;
-    font-size: 10px;
+    font-size: 14px;
   }
 }
 .courses_cards {
@@ -126,7 +137,7 @@
 .courses_iframevideos {
   border-radius: 12px;
   width: 100%;
-  height: 400px;
+  /* height: 400px; */
   margin-bottom: 20px;
 }
 .coursevideos_active_video_title {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Row, Col, Tabs, Button } from "antd";
+import { Row, Col, Tabs, Button, Drawer, Upload, Modal, Skeleton } from "antd";
 import { IoArrowBackOutline } from "react-icons/io5";
 import { FaRegNoteSticky } from "react-icons/fa6";
 import { LuClock4 } from "react-icons/lu";
@@ -8,25 +8,41 @@ import { FiVideo } from "react-icons/fi";
 import { FiBookmark } from "react-icons/fi";
 import { AiTwotoneCheckCircle } from "react-icons/ai";
 import { RiCheckboxCircleFill } from "react-icons/ri";
+import { IoCloudUploadOutline } from "react-icons/io5";
 import "./styles.css";
 import CourseOverview from "./CourseOverview";
 import CourseDiscussion from "./CourseDiscussion";
 import CourseReviews from "./CourseReviews";
-import { Modal } from "antd";
 import CommonSpinner from "../Common/CommonSpinner";
 import CommonInputField from "../Common/CommonInputField";
-import { addressValidator } from "../Common/Validation";
-import { createModule, getModules, getReviews } from "../ApiService/action";
+import {
+  addressValidator,
+  selectValidator,
+  youtubeLinkValidator,
+} from "../Common/Validation";
+import {
+  createModule,
+  getCourses,
+  getModules,
+  getReviews,
+  getVideos,
+} from "../ApiService/action";
 import { CommonMessage } from "../Common/CommonMessage";
 import NodataImage from "../../assets/nodata.png";
+import CommonSelectField from "../Common/CommonSelectField";
+import { uploadCourseVideo } from "../ApiService/MultipartApi";
+import CommonNodataFound from "../Common/CommonNoDataFound";
+import { CgPlayStopO } from "react-icons/cg";
+
+const { Dragger } = Upload;
 
 export default function CourseVideos({
   setIsOpenCourseTab,
   clickedCourseDetails,
   setClickedCourseDetails,
+  setCoursesData,
 }) {
-  const [isAccordionOpen, setIsAccordionOpen] = useState(false);
-  const [accordionIndex, setAccordionIndex] = useState(null);
+  const [openAccordionIds, setOpenAccordionIds] = useState([]);
   const [modulesData, setModulesData] = useState([]);
   const [reviewsData, setReviewsData] = useState([]);
   const [isOpenAddModuleModal, setIsOpenAddModuleModal] = useState(false);
@@ -36,76 +52,53 @@ export default function CourseVideos({
   const [moduleTitleError, setModuleTitleError] = useState("");
   const [validationTrigger, setValidationTrigger] = useState(false);
   const [buttonLoading, setButtonLoading] = useState(false);
+  //upload video
+  const [isOpenUploadVideoDrawer, setIsOpenUploadVideoDrawer] = useState(false);
+  const [videoTitle, setVideoTitle] = useState("");
+  const [videoTitleError, setVideoTitleError] = useState("");
+  const [moduleId, setModuleId] = useState(null);
+  const [moduleIdError, setModuleIdError] = useState("");
+  const videoTypeOptions = [
+    { id: "video", name: "Video" },
+    { id: "youtube", name: "Youtube Link" },
+  ];
+  const [videoType, setVideoType] = useState("video");
+  const [videoTypeError, setVideoTypeError] = useState("");
+  const [youtubeUrl, setYoutubeUrl] = useState("");
+  const [youtubeUrlError, setYoutubeUrlError] = useState("");
+  const [courseVideo, setCourseVideo] = useState(null);
+  const [courseVideoError, setCourseVideoError] = useState("");
+  const [courseVideoArray, setCourseVideoArray] = useState([]);
+  const [moduleVideosMap, setModuleVideosMap] = useState({});
+  const [moduleVideosLoadingMap, setModuleVideosLoadingMap] = useState({});
+  const [activeVideo, setActiveVideo] = useState(null);
+  const [hours, minutes] = clickedCourseDetails.duration_period.split(":");
 
   useEffect(() => {
-    getModulesData();
+    getModulesData(true, true);
   }, []);
 
-  const getModulesData = async () => {
+  const getModulesData = async (
+    triggerGetReviewsApi = true,
+    isInitialCall = false,
+  ) => {
     try {
       const response = await getModules(clickedCourseDetails?.id);
       console.log("get modules response", response);
-      const data = response?.data?.data || [];
-
-      if (data.length >= 1) {
-        const alterData = data.map((item) => {
-          if (item.title == "Loops") {
-            return {
-              ...item,
-              lessons: [
-                { id: 1, name: "Count number of digits in a number" },
-                { id: 2, name: "Factorial of a number" },
-                {
-                  id: 3,
-                  name: "Greatest Common Divisor : Highest Common Factor. (GCD:HCF)",
-                },
-                { id: 4, name: "Lowest Common Factor" },
-                { id: 5, name: "AES Numbers" },
-                {
-                  id: 6,
-                  name: "Prime Numbers | Find if the number is prime or not",
-                },
-                { id: 7, name: "Trailing zeros" },
-              ],
-            };
-          } else if (item.title == "Arrays") {
-            return {
-              ...item,
-              lessons: [
-                { id: 8, name: "Second Largest Element of an Array" },
-                { id: 9, name: "Ceil and Floor of an Sorted Array" },
-                {
-                  id: 10,
-                  name: "Devus Friendship",
-                },
-                { id: 11, name: "Span of an Array" },
-                {
-                  id: 12,
-                  name: "Array Program(Walk in row,Circular array rotation,Merge array)",
-                },
-                { id: 13, name: "Binary Search(Java)" },
-                { id: 14, name: "Linear Search" },
-                { id: 14, name: "Insertion Sort" },
-                { id: 15, name: "Selection sort" },
-                { id: 16, name: "Bubble Sort" },
-              ],
-            };
-          } else {
-            return { ...item, lessons: [] };
-          }
-        });
-        console.log("alterData", alterData);
-        setModulesData(alterData);
-      } else {
-        setModulesData([]);
+      const modules_data = response?.data?.data || [];
+      setModulesData(modules_data);
+      if (isInitialCall && modules_data.length >= 1) {
+        setOpenAccordionIds([modules_data[0].id]);
+        getModuleVideos(modules_data[0].id);
       }
-      // setModulesData(response?.data?.data || []);
     } catch (error) {
       setModulesData([]);
       console.log("get modules error", error);
     } finally {
       setTimeout(() => {
-        getReviewsData();
+        if (triggerGetReviewsApi) {
+          getReviewsData();
+        }
       }, 300);
     }
   };
@@ -122,6 +115,26 @@ export default function CourseVideos({
         error?.response?.data?.details ||
           "Something went wrong. Try again later",
       );
+    }
+  };
+
+  const getCoursesData = async () => {
+    try {
+      const response = await getCourses();
+      console.log("get courses response", response);
+      const course_data = response?.data?.data || [];
+      setCoursesData(course_data);
+      const current_course_data = course_data.find(
+        (f) => f.id == clickedCourseDetails?.id,
+      );
+      setClickedCourseDetails(current_course_data);
+    } catch (error) {
+      setCoursesData([]);
+      console.log("get course error", error);
+    } finally {
+      setTimeout(() => {
+        getModulesData(false);
+      }, 300);
     }
   };
 
@@ -146,7 +159,7 @@ export default function CourseVideos({
       setTimeout(() => {
         setButtonLoading(false);
         formReset();
-        getModulesData();
+        getModulesData(false);
         CommonMessage("success", "Module Created Successfully!");
       }, 300);
     } catch (error) {
@@ -159,19 +172,147 @@ export default function CourseVideos({
     }
   };
 
+  const handleCourseVideo = ({ file }) => {
+    console.log("fileeeeee", file);
+    const ValidType = file.type === "video/mp4";
+
+    if (file.status === "uploading" || file.status === "removed") {
+      setCourseVideo(null);
+      setCourseVideoArray([]);
+      return;
+    }
+
+    if (ValidType) {
+      setCourseVideo(file);
+      setCourseVideoArray([file]);
+      CommonMessage("success", "Video uploaded");
+    } else {
+      setCourseVideo(null);
+      setCourseVideoArray([]);
+      CommonMessage("error", "Only .mp4 files are accepted");
+    }
+  };
+
+  const handleVideoUpload = async () => {
+    const titleValidate = addressValidator(videoTitle);
+    const moduleIdValidate = selectValidator(moduleId);
+    const youtubeUrlValidate =
+      videoType == 2 ? youtubeLinkValidator(youtubeUrl) : "";
+    const courseVideoValidate =
+      videoType == 1 ? selectValidator(courseVideo) : "";
+
+    setVideoTitleError(titleValidate);
+    setModuleIdError(moduleIdValidate);
+    setYoutubeUrlError(youtubeUrlValidate);
+    setCourseVideoError(courseVideoValidate);
+
+    if (
+      titleValidate ||
+      moduleIdValidate ||
+      youtubeUrlValidate ||
+      courseVideoValidate
+    )
+      return;
+
+    setButtonLoading(true);
+
+    const formData = new FormData();
+
+    formData.append("module_id", moduleId);
+    formData.append("title", videoTitle);
+    formData.append("content_type", videoType);
+    formData.append("content_url", youtubeUrl);
+    formData.append("content", courseVideo);
+
+    for (let pair of formData.entries()) {
+      console.log(pair[0], pair[1]);
+    }
+    try {
+      const response = await uploadCourseVideo(formData);
+      setTimeout(() => {
+        CommonMessage("success", "Video Uploaded Successfully!");
+        formReset();
+        getCoursesData();
+      }, 300);
+    } catch (error) {
+      setButtonLoading(false);
+      CommonMessage(
+        "error",
+        error?.response?.data?.details ||
+          "Something went wrong. Try again later",
+      );
+    }
+  };
+
+  const getModuleVideos = async (id) => {
+    setModuleVideosLoadingMap((prev) => ({ ...prev, [id]: true }));
+    const payload = {
+      course_id: clickedCourseDetails?.id,
+      module_id: id,
+    };
+    try {
+      const response = await getVideos(payload);
+      console.log("get module videos response", response);
+      const videos = response?.data?.videos || [];
+      setModuleVideosMap((prev) => ({ ...prev, [id]: videos }));
+      if (videos.length >= 1 && !activeVideo) {
+        setActiveVideo(videos[0]);
+      }
+    } catch (error) {
+      setModuleVideosMap((prev) => ({ ...prev, [id]: [] }));
+      console.log("get module videos error", error);
+    } finally {
+      setModuleVideosLoadingMap((prev) => ({ ...prev, [id]: false }));
+    }
+  };
+
+  const getYoutubeId = (url) => {
+    if (!url) return "";
+
+    try {
+      const parsedUrl = new URL(url);
+
+      if (parsedUrl.hostname === "youtu.be") {
+        return parsedUrl.pathname.slice(1);
+      }
+
+      return parsedUrl.searchParams.get("v");
+    } catch {
+      return "";
+    }
+  };
+  const getMinutes = (duration) => {
+    const [hours, minutes, seconds] = duration.split(":").map(Number);
+
+    const totalMinutes = hours * 60 + minutes;
+    return `${totalMinutes} mins`;
+  };
+
   const formReset = () => {
     setValidationTrigger(false);
     setIsOpenAddModuleModal(false);
+    setIsOpenUploadVideoDrawer(false);
+    setButtonLoading(false);
     setModuleName("");
     setModuleNameError("");
     setModuleTitle("");
     setModuleTitleError("");
+    //videos usestates
+    setVideoTitle("");
+    setVideoTitleError("");
+    setModuleId(null);
+    setModuleIdError("");
+    setVideoType("video");
+    setVideoTypeError("");
+    setCourseVideo("");
+    setCourseVideoArray([]);
+    setCourseVideoError("");
   };
 
   return (
     <div>
       <Row>
-        <Col xs={24} sm={24} md={24} lg={12}>
+        <Col xs={24} sm={24} md={12} lg={12}>
           <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
             <IoArrowBackOutline
               size={30}
@@ -187,9 +328,9 @@ export default function CourseVideos({
         <Col
           xs={24}
           sm={24}
-          md={24}
+          md={12}
           lg={12}
-          style={{ display: "flex", justifyContent: "flex-end" }}
+          className="courses_createmodule_button_container"
         >
           <button
             className="courses_createcourse_button"
@@ -197,18 +338,58 @@ export default function CourseVideos({
           >
             Create Module
           </button>
+
+          <button
+            className="courses_createcourse_button"
+            onClick={() => setIsOpenUploadVideoDrawer(true)}
+          >
+            Upload Video
+          </button>
         </Col>
       </Row>
 
-      <Row gutter={24} style={{ marginTop: "40px" }}>
-        <Col span={15}>
-          <iframe
-            src={`https://www.youtube.com/embed/${`hiqoCvPs_Jc`}`}
-            allowFullScreen
-            className="courses_iframevideos"
-          ></iframe>
+      <Row gutter={24}>
+        <Col xs={24} sm={24} md={24} lg={15} style={{ marginTop: "40px" }}>
+          {activeVideo ? (
+            activeVideo.content_type === "youtube" ? (
+              <iframe
+                key={activeVideo?.file_path}
+                src={`https://www.youtube.com/embed/${getYoutubeId(activeVideo?.file_path)}`}
+                allowFullScreen
+                className="courses_iframevideos"
+                style={{ height: "400px" }}
+              ></iframe>
+            ) : (
+              <video
+                key={activeVideo?.file_path}
+                controls
+                controlsList="nodownload"
+                className="courses_iframevideos"
+              >
+                <source
+                  src={`${import.meta.env.VITE_API_URL}${activeVideo?.file_path}`}
+                  type="video/mp4"
+                />
+                Your browser does not support the video tag.
+              </video>
+            )
+          ) : (
+            <div
+              className="courses_iframevideos"
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: "#f9fafb",
+                border: "1px solid #eaecf0",
+                height: "400px",
+              }}
+            >
+              <CommonNodataFound message="No videos found" />
+            </div>
+          )}
           <p className="coursevideos_active_video_title">
-            Factorial of a number
+            {activeVideo ? activeVideo.title : "Select a video to play"}
           </p>
           <div>
             <Tabs
@@ -246,44 +427,59 @@ export default function CourseVideos({
             />
           </div>
         </Col>
-        <Col span={9}>
+
+        <Col xs={24} sm={24} md={24} lg={9} style={{ marginTop: "40px" }}>
           <p className="coursevideos_content_heading">Course Content</p>
 
           <div className="coursevideos_modules_container">
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <FaRegNoteSticky size={19} />
-              <p style={{ fontSize: "16px" }}>8 Modules</p>
+              <p style={{ fontSize: "16px" }}>
+                {clickedCourseDetails.module_count} Modules
+              </p>
             </div>
 
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <LuClock4 size={19} />
-              <p style={{ fontSize: "16px" }}>28 Hr 13.5 mins</p>
+              <p style={{ fontSize: "16px" }}>
+                {" "}
+                {`${parseInt(hours)} Hr ${parseInt(minutes)} mins`}
+              </p>
             </div>
           </div>
 
           {/* ----------------modules accordion---------------- */}
           {modulesData.map((item, index) => {
+            const [hours, minutes] = item.duration_period.split(":");
+            const isOpen = openAccordionIds.includes(item.id);
+            const currentVideos = moduleVideosMap[item.id] || [];
+            const isVideosLoading = moduleVideosLoadingMap[item.id];
+
             return (
-              <div className="coursevideos_accordion_maincontainer">
+              <div className="coursevideos_accordion_maincontainer" key={item.id}>
                 <div
                   className={
-                    accordionIndex == index && isAccordionOpen
+                    isOpen
                       ? "coursevideos_active_accordion_sub_container"
                       : "coursevideos_accordion_sub_container"
                   }
                 >
                   <header
                     className={
-                      accordionIndex == index && isAccordionOpen
+                      isOpen
                         ? "coursevideos_accordion_active_header"
                         : "coursevideos_accordion_header"
                     }
                     onClick={() => {
-                      if (index == accordionIndex) {
-                        setIsAccordionOpen(!isAccordionOpen);
+                      if (isOpen) {
+                        setOpenAccordionIds(
+                          openAccordionIds.filter((id) => id !== item.id),
+                        );
                       } else {
-                        setAccordionIndex(index);
-                        setIsAccordionOpen(true);
+                        setOpenAccordionIds([...openAccordionIds, item.id]);
+                        if (!moduleVideosMap[item.id]) {
+                          getModuleVideos(item.id);
+                        }
                       }
                     }}
                   >
@@ -293,26 +489,25 @@ export default function CourseVideos({
                         {item.module_name}
                         <span
                           style={{
-                            color:
-                              accordionIndex == index && isAccordionOpen
-                                ? "#fff"
-                                : "#667085",
+                            color: isOpen ? "#fff" : "#667085",
                           }}
                         >
                           {item.title}
                         </span>
                       </p>
 
-                      {accordionIndex == index && isAccordionOpen ? (
+                      {isOpen ? (
                         <div className="coursevideos_active_accordion_modules_container">
                           <div className="coursevideos_lessons_container">
                             <FaRegNoteSticky size={13} />
-                            <p>{item.lessons.length} Lessons</p>
+                            <p>{item.video_count} Lessons</p>
                           </div>
 
                           <div className="coursevideos_hours_conatiner">
                             <LuClock4 size={12} />
-                            <p>28 Hr 13.5 mins</p>
+                            <p>
+                              {`${parseInt(hours)} Hr ${parseInt(minutes)} mins`}
+                            </p>
                           </div>
                         </div>
                       ) : (
@@ -326,7 +521,7 @@ export default function CourseVideos({
                           >
                             <FaRegNoteSticky size={19} />
                             <p style={{ fontSize: "16px" }}>
-                              {item.lessons.length} Lessons
+                              {item.video_count} Lessons
                             </p>
                           </div>
 
@@ -338,7 +533,9 @@ export default function CourseVideos({
                             }}
                           >
                             <LuClock4 size={19} />
-                            <p style={{ fontSize: "16px" }}>28 Hr 13.5 mins</p>
+                            <p style={{ fontSize: "16px" }}>
+                              {`${parseInt(hours)} Hr ${parseInt(minutes)} mins`}
+                            </p>
                           </div>
                         </div>
                       )}
@@ -349,21 +546,55 @@ export default function CourseVideos({
                     </div>
                   </header>
 
-                  {accordionIndex == index && isAccordionOpen && (
+                  {isOpen && (
                     <>
-                      {item.lessons.length >= 1 ? (
+                      {isVideosLoading ? (
+                        <div
+                          style={{ padding: "20px" }}
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          {[1, 2, 3].map((item) => (
+                            <Skeleton
+                              key={item}
+                              active
+                              avatar={{ shape: "square" }}
+                              paragraph={{ rows: 1 }}
+                              title={{ width: "60%" }}
+                            />
+                          ))}
+                        </div>
+                      ) : currentVideos.length >= 1 ? (
                         <>
-                          {item.lessons.map((lesson, index) => {
+                          {currentVideos.map((lesson, idx) => {
                             return (
-                              <React.Fragment key={index}>
-                                <div className="coursevideos_accordion_content_container">
+                              <React.Fragment key={idx}>
+                                <div
+                                  className="coursevideos_accordion_content_container"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    console.log("hoooo", lesson);
+                                    setActiveVideo(lesson);
+                                  }}
+                                >
                                   <div className="coursevideos_videoicon_conatiner">
                                     <FiVideo color="#fff" width={16} />
                                   </div>
 
-                                  <div>
-                                    <p className="coursevideos_videoname">
-                                      {lesson.name}
+                                  <div style={{ flex: 1 }}>
+                                    <p
+                                      className="coursevideos_videoname"
+                                      style={{
+                                        fontWeight:
+                                          activeVideo?.id === lesson.id
+                                            ? "600"
+                                            : "400",
+                                        color:
+                                          activeVideo?.id === lesson.id
+                                            ? "#2160ad"
+                                            : "#344054",
+                                      }}
+                                    >
+                                      {lesson.title}
                                       <FiBookmark
                                         size={18}
                                         color="#2160ad"
@@ -371,7 +602,7 @@ export default function CourseVideos({
                                       />
                                     </p>
                                     <p className="coursevideos_videotiming">
-                                      12 mins
+                                      {getMinutes(lesson.duration)}
                                     </p>
                                   </div>
 
@@ -382,10 +613,14 @@ export default function CourseVideos({
                                       alignItems: "center",
                                     }}
                                   >
-                                    <RiCheckboxCircleFill
-                                      size={20}
-                                      color="#667085"
-                                    />
+                                    {activeVideo?.id === lesson.id ? (
+                                      <CgPlayStopO size={22} color="#2160ad" />
+                                    ) : (
+                                      <RiCheckboxCircleFill
+                                        size={20}
+                                        color="#667085"
+                                      />
+                                    )}
                                   </div>
                                 </div>
                               </React.Fragment>
@@ -393,7 +628,10 @@ export default function CourseVideos({
                           })}
                         </>
                       ) : (
-                        <div className="coursevideos_nolessons_container">
+                        <div
+                          className="coursevideos_nolessons_container"
+                          onClick={(e) => e.stopPropagation()}
+                        >
                           <img src={NodataImage} />
                           <p>No lessons found</p>
                         </div>
@@ -472,6 +710,145 @@ export default function CourseVideos({
           />
         </div>
       </Modal>
+
+      {/* upload video drawer */}
+      <Drawer
+        title="Upload Video"
+        open={isOpenUploadVideoDrawer}
+        onClose={formReset}
+        size={"40%"}
+        style={{ position: "relative", paddingBottom: "60px" }}
+        className="courses_createcourses_drawer"
+      >
+        <Row gutter={16} className="courses_createcourse_drawer_row_div">
+          <Col xs={24} sm={24} md={24} lg={24} style={{ marginTop: "30px" }}>
+            <CommonInputField
+              required={true}
+              label="Title"
+              onChange={(e) => {
+                setVideoTitle(e.target.value);
+                setVideoTitleError(addressValidator(e.target.value));
+              }}
+              value={videoTitle}
+              error={videoTitleError}
+            />
+          </Col>
+
+          <Col xs={24} sm={24} md={24} lg={12} style={{ marginTop: "30px" }}>
+            <CommonSelectField
+              required={true}
+              label="Module"
+              options={modulesData}
+              onChange={(e) => {
+                setModuleId(e.target.value);
+                setModuleIdError(selectValidator(e.target.value));
+              }}
+              value={moduleId}
+              error={moduleIdError}
+            />
+          </Col>
+
+          <Col xs={24} sm={24} md={24} lg={12} style={{ marginTop: "30px" }}>
+            <CommonSelectField
+              required={true}
+              label="Video Type"
+              options={videoTypeOptions}
+              onChange={(e) => {
+                setVideoType(e.target.value);
+                setVideoTypeError(selectValidator(e.target.value));
+              }}
+              value={videoType}
+              error={videoTypeError}
+              allowClear={false}
+            />
+          </Col>
+
+          {videoType == "youtube" ? (
+            <Col
+              xs={24}
+              sm={24}
+              md={24}
+              lg={24}
+              style={{ marginTop: "30px", marginBottom: "40px" }}
+            >
+              <CommonInputField
+                required={true}
+                label="Youtube Url"
+                onChange={(e) => {
+                  setYoutubeUrl(e.target.value);
+                  setYoutubeUrlError(youtubeLinkValidator(e.target.value));
+                }}
+                value={youtubeUrl}
+                error={youtubeUrlError}
+              />
+            </Col>
+          ) : (
+            <Col
+              xs={24}
+              sm={24}
+              md={24}
+              lg={24}
+              style={{ marginTop: "30px", marginBottom: "40px" }}
+            >
+              <p className="common_inputfields_label">
+                Video <span style={{ color: "#d32f2f" }}>*</span>
+              </p>
+              <Dragger
+                className="profilepage_personalinfo_dragger"
+                multiple={false}
+                beforeUpload={(file) => {
+                  console.log(file);
+                  return false; // Prevent auto-upload
+                }}
+                maxCount={1}
+                onChange={handleCourseVideo}
+                fileList={courseVideoArray}
+              >
+                <IoCloudUploadOutline
+                  size={45}
+                  color="#0056b3"
+                  style={{ marginBottom: "16px" }}
+                />
+                <p className="ant-upload-text">
+                  Click or drag video to this area to upload
+                </p>
+                <p className="ant-upload-hint">
+                  Strictly prohibited from uploading company data or other
+                  banned files.
+                </p>
+              </Dragger>
+              {courseVideoError && (
+                <p
+                  style={{
+                    fontSize: "12px",
+                    color: "#d32f2f",
+                    marginTop: "4px",
+                  }}
+                >
+                  Course Video{courseVideoError}
+                </p>
+              )}
+            </Col>
+          )}
+        </Row>
+
+        <div className="courses_createcourses_drawer_footer">
+          <div className="courses_createcourses_drawer_submit_buttoncontainer">
+            {buttonLoading ? (
+              <button className="courses_createcourses_drawer_loadingsubmitbutton">
+                <CommonSpinner />
+              </button>
+            ) : (
+              <button
+                className="courses_createcourses_drawer_submitbutton"
+                onClick={handleVideoUpload}
+              >
+                Submit
+              </button>
+            )}
+          </div>
+        </div>
+      </Drawer>
     </div>
   );
 }

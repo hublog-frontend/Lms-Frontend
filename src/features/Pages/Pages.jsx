@@ -13,6 +13,7 @@ import { FiUser } from "react-icons/fi";
 import { RiShutDownLine } from "react-icons/ri";
 import { Tooltip } from "antd";
 import Profile from "../Profile/Profile";
+import Assignments from "../Assignments/Assigenments";
 
 const { Sider, Content, Header } = Layout;
 const { useBreakpoint } = Grid;
@@ -21,6 +22,8 @@ export default function Pages() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const [userName, setUserName] = useState("");
+  const [userEmail, setUserEmail] = useState("");
   const [collapsed, setCollapsed] = useState(true);
   const [showSidebar, setShowSidebar] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -56,6 +59,11 @@ export default function Pages() {
   }, []);
 
   useEffect(() => {
+    const getloginUserDetails = localStorage.getItem("loginUserDetails");
+    const converAsJson = JSON.parse(getloginUserDetails);
+    setUserName(converAsJson?.user_name);
+    setUserEmail(converAsJson?.email);
+
     const token = localStorage.getItem("AccessToken");
     const path = location.pathname;
 
@@ -128,15 +136,10 @@ export default function Pages() {
                   </div>
 
                   {!collapsed && (
-                    <div
-                      style={{ cursor: "pointer" }}
-                      onClick={() => {
-                        navigate("/profile");
-                      }}
-                    >
-                      <p className="pages_sidebar_login_username">Balaji</p>
+                    <div>
+                      <p className="pages_sidebar_login_username">{userName}</p>
                       <p className="pages_sidebar_login_useremail">
-                        balaji@gmail.com
+                        {userEmail}
                       </p>
                     </div>
                   )}
@@ -210,7 +213,7 @@ export default function Pages() {
       >
         <Content
           style={{
-            padding: "24px",
+            padding: isMobile ? "16px" : "24px",
             minHeight: "100vh",
             background: "#f9fafb",
           }}
@@ -219,6 +222,7 @@ export default function Pages() {
             <Route element={<Courses />} path="/courses" />
             <Route element={<CourseVideos />} path="/course-videos" />
             <Route element={<Tests />} path="/tests" />
+            <Route element={<Assignments />} path="/assignments" />
             <Route element={<Profile />} path="/profile" />
           </Routes>
         </Content>

@@ -3,7 +3,7 @@ import { useNavigate, useLocation, Link } from "react-router-dom";
 import { Menu } from "antd";
 import { GoHome } from "react-icons/go";
 import { LuBookOpen } from "react-icons/lu";
-import { FiCheckSquare } from "react-icons/fi";
+import { FiUser, FiCheckSquare } from "react-icons/fi";
 import { MdOutlineAssignment } from "react-icons/md";
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 import { FiBriefcase } from "react-icons/fi";
@@ -49,6 +49,11 @@ export default function SideMenu() {
       title: "Bookmarks",
       icon: <FiBookmark size={19} />,
       path: "bookmarks",
+    },
+    8: {
+      title: "Profile",
+      icon: <FiUser size={19} />,
+      path: "profile",
     },
   });
 

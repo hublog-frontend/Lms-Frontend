@@ -1,0 +1,162 @@
+.assignments_count_cards_main_container {
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+@media (min-width: 320px) and (max-width: 767px) {
+  .assignments_count_cards_main_container {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+}
+.assignments_count_cards {
+  /* min-width: 254px; */
+  max-width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid #eaecf0;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px 0 #1018280d;
+  background: #ffffff;
+}
+@media (min-width: 320px) and (max-width: 767px) {
+  .assignments_count_cards {
+    padding: 12px;
+    gap: 10px;
+    max-width: 100%;
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+.assignments_count_cards_heading {
+  font-size: 14px;
+  line-height: 20px;
+  color: #667085;
+  margin-bottom: 4px;
+}
+@media (min-width: 320px) and (max-width: 767px) {
+  .assignments_count_cards_heading {
+    font-size: 9.5px;
+    line-height: 16px;
+  }
+}
+@media (min-width: 769px) and (max-width: 1024px) {
+  .assignments_count_cards_heading {
+    font-size: 13px;
+  }
+}
+.assignments_count_cards_count {
+  font-size: 24px;
+  line-height: 32px;
+  color: #101828;
+  font-weight: 550;
+  margin-top: 2px !important;
+}
+@media (min-width: 320px) and (max-width: 767px) {
+  .assignments_count_cards_count {
+    font-size: 15px;
+  }
+}
+@media (min-width: 769px) and (max-width: 1024px) {
+  .assignments_count_cards_count {
+    font-size: 18px;
+  }
+}
+.assignments_count_cards_icon_container {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+}
+@media (min-width: 320px) and (max-width: 767px) {
+  .assignments_count_cards_icon_container {
+    width: 32px;
+    height: 32px;
+  }
+}
+.assignments_count_cards_icon {
+  font-size: 26px;
+}
+@media (min-width: 320px) and (max-width: 767px) {
+  .assignments_count_cards_icon {
+    font-size: 16px;
+  }
+}
+
+.assignments_cards {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: #ffffff;
+  border: 1px solid #eaecf0;
+  border-radius: 12px;
+}
+.assignment_cards_header_container {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 24px 24px 0px 24px;
+  flex-direction: column;
+}
+.assignment_cards_header_name_container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.assignment_cards_header_name {
+  width: 100%;
+  font-size: 16px;
+  font-weight: 450;
+  line-height: 28px;
+  color: #101828;
+}
+.assignment_cards_mnc_image {
+  width: 42px;
+  height: 42px;
+}
+
+.assignment_cards_batch_container {
+  margin-top: 12px;
+  font-size: 12px;
+  font-weight: 450;
+  line-height: 18px;
+  background-color: #f9f0ff;
+  color: #531dab;
+  padding: 2px 8px;
+  border-radius: 8px;
+}
+.assignment_cards_divider {
+  margin: 0px 0px 0px 0px !important;
+  border-block-start: 1.5px solid rgb(5 5 5 / 14%) !important;
+}
+.assignment_cards_score_container {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 0px 24px 0px 24px;
+  flex-direction: column;
+}
+.assignment_cards_score_name_container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+  font-weight: 450;
+  line-height: 20px;
+  color: #667085;
+  width: 100%;
+  margin-bottom: 6px;
+}
+.assignment_cards_container {
+  padding: 0px 24px 24px 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #2160ad;
+  font-weight: 500;
+}

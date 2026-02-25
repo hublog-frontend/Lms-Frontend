@@ -121,7 +121,7 @@ export default function Courses() {
 
           <Row gutter={12} style={{ marginTop: "20px" }}>
             <Col xs={15} sm={15} md={15} lg={6}>
-              <CommonOutlinedInput
+              {/* <CommonOutlinedInput
                 label="Search for Course"
                 width="100%"
                 height="36px"
@@ -146,6 +146,10 @@ export default function Courses() {
                 }}
                 onChange={handleSearch}
                 value={searchValue}
+              /> */}
+              <CommonInputField
+                placeholder="Search for Course"
+                prefix={<CiSearch size={16} />}
               />
             </Col>
 
@@ -168,6 +172,7 @@ export default function Courses() {
           {coursesData.length >= 1 ? (
             <Row gutter={16} style={{ marginTop: "20px" }}>
               {coursesData.map((item, index) => {
+                const [hours, minutes] = item.duration_period.split(":");
                 return (
                   <React.Fragment key={index}>
                     <Col xs={24} sm={24} md={24} lg={8}>
@@ -199,7 +204,9 @@ export default function Courses() {
                               }}
                             >
                               <FaRegNoteSticky size={16} />
-                              <p style={{ fontSize: "16px" }}>8 Modules</p>
+                              <p style={{ fontSize: "16px" }}>
+                                {item.module_count} Modules
+                              </p>
                             </Col>
 
                             <Col
@@ -212,7 +219,8 @@ export default function Courses() {
                             >
                               <LuClock4 size={16} />
                               <p style={{ fontSize: "16px" }}>
-                                28 Hr 13.5 mins
+                                {/* 28 Hr 13.5 mins */}
+                                {`${parseInt(hours)} Hr ${parseInt(minutes)} mins`}
                               </p>
                             </Col>
                           </Row>
@@ -237,6 +245,7 @@ export default function Courses() {
           setIsOpenCourseTab={setIsOpenCourseTab}
           clickedCourseDetails={clickedCourseDetails}
           setClickedCourseDetails={setClickedCourseDetails}
+          setCoursesData={setCoursesData}
         />
       )}
 

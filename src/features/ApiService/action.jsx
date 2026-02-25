@@ -170,6 +170,16 @@ export const getReviews = async (course_id) => {
   }
 };
 
+// videos api's
+export const getVideos = async (payload) => {
+  try {
+    const response = await api.get(`/api/getVideos`, { params: payload });
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
 // profile api's
 export const updateProfile = async (payload) => {
   try {

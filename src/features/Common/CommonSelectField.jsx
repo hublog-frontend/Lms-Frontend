@@ -36,6 +36,9 @@ export default function CommonSelectField({
     if (showLabelStatus === "Email") return option?.email;
     if (showLabelStatus === "Mobile") return option?.mobile;
     if (showLabelStatus === "Trainer Id") return option?.trainer_code;
+    if (option?.module_name) {
+      return `${option.module_name} - ${option.title}`;
+    }
 
     if (option?.user_name) {
       return `${option.user_id} - ${option.user_name}`;
@@ -46,7 +49,7 @@ export default function CommonSelectField({
 
   // ✅ convert to AntD options format
   const mappedOptions = options.map((opt) => ({
-    value: String(opt.user_id ?? opt.id),
+    value: opt.id,
     label: renderOption ? renderOption(opt) : getLabel(opt),
     disabled: opt.is_active === false,
     group: groupBy ? groupBy(opt) : null,

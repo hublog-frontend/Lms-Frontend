@@ -4,6 +4,7 @@ import { Col, Row } from "antd";
 import Logo from "../../assets/logo.png";
 import { FaCode } from "react-icons/fa6";
 import { GrNotes } from "react-icons/gr";
+import { AiOutlineLock } from "react-icons/ai";
 import { FiEyeOff, FiEye } from "react-icons/fi";
 import "./styles.css";
 import CommonInputField from "../Common/CommonInputField";
@@ -13,6 +14,7 @@ import { emailValidator, passwordValidator } from "../Common/Validation";
 import { LoginApi } from "../ApiService/action";
 import { CommonMessage } from "../Common/CommonMessage";
 import CommonSpinner from "../Common/CommonSpinner";
+import { Input } from "antd";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -117,10 +119,12 @@ export default function Login() {
             </p>
 
             <form>
-              <div style={{ marginTop: "30px" }}>
-                <CommonOutlinedInput
+              <div style={{ marginTop: "30px", position: "relative" }}>
+                <Input
                   label="Email"
-                  icon={<MdOutlineEmail size={18} />}
+                  className="loginpage_input_field"
+                  placeholder="Enter your email address"
+                  prefix={<MdOutlineEmail size={23} color="#9da4b0" />}
                   onChange={(e) => {
                     setEmail(e.target.value);
                     if (validationTrigger) {
@@ -128,15 +132,27 @@ export default function Login() {
                     }
                   }}
                   value={email}
-                  error={emailError}
                 />
+
+                {emailError && (
+                  <div className="loginpage_inputfield_error_container">
+                    <p>Email {emailError}</p>
+                  </div>
+                )}
               </div>
 
-              <div style={{ marginTop: "30px" }}>
-                <CommonOutlinedInput
+              <div style={{ marginTop: "30px", position: "relative" }}>
+                <Input.Password
                   label="Password"
-                  type={showPassword ? "text" : "password"}
-                  icon={
+                  placeholder="Enter your password"
+                  className="loginpage_input_field"
+                  iconRender={() => null}
+                  prefix={<AiOutlineLock size={23} color="#9da4b0" />}
+                  visibilityToggle={{
+                    visible: showPassword,
+                    onVisibleChange: setShowPassword,
+                  }}
+                  suffix={
                     <>
                       {showPassword ? (
                         <FiEye
@@ -171,6 +187,15 @@ export default function Login() {
                     width: "100%",
                   }}
                 />
+
+                {passwordError && (
+                  <div
+                    className="loginpage_inputfield_error_container"
+                    style={{ width: "70%", bottom: "-40px" }}
+                  >
+                    <p>Password {passwordError}</p>
+                  </div>
+                )}
               </div>
 
               <div className="loginpage_forgotpassword_container">

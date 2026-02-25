@@ -9,6 +9,9 @@ const domainRegex =
   /^(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+(?:[a-zA-Z]{2,})$/;
 const urlRegex = /^(https?:\/\/)?([\w-]+(\.[\w-]+)+)(:\d+)?(\/[^\s]*)?$/i;
 const ifscRegex = /^[A-Z]{4}0[A-Z0-9]{6}$/;
+const youtubeLinkRegex =
+  /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/(watch\?v=|embed\/|shorts\/)?([a-zA-Z0-9_-]{11})(\S*)?$/;
+
 import dayjs from "dayjs";
 import moment from "moment";
 
@@ -629,4 +632,12 @@ export const formatAddress = (value) => {
         .join(" "),
     )
     .join(", ");
+};
+
+export const youtubeLinkValidator = (link) => {
+  let error = "";
+  if (link.length >= 1 && !youtubeLinkRegex.test(link))
+    error = "  is not valid";
+
+  return error;
 };
