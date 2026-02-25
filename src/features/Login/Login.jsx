@@ -73,7 +73,13 @@ export default function Login() {
   return (
     <div>
       <Row>
-        <Col span={12} className="loginpage_left_maincontainer">
+        <Col
+          xs={24}
+          sm={24}
+          md={24}
+          lg={12}
+          className="loginpage_left_maincontainer"
+        >
           <div>
             <div className="loginpage_logo_container">
               <img src={Logo} className="loginpage_logo" />
@@ -110,7 +116,13 @@ export default function Login() {
             </div>
           </div>
         </Col>
-        <Col span={12} className="loginpage_right_maincontainer">
+        <Col
+          xs={24}
+          sm={24}
+          md={24}
+          lg={12}
+          className="loginpage_right_maincontainer"
+        >
           <div>
             <p className="loginpage_login_heading">Login</p>
             <p className="loginpage_description">
