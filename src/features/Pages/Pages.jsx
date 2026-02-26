@@ -14,6 +14,7 @@ import { RiShutDownLine } from "react-icons/ri";
 import { Tooltip } from "antd";
 import Profile from "../Profile/Profile";
 import Assignments from "../Assignments/Assigenments";
+import TestTopics from "../Tests/TestTopics";
 
 const { Sider, Content, Header } = Layout;
 const { useBreakpoint } = Grid;
@@ -222,6 +223,7 @@ export default function Pages() {
             <Route element={<Courses />} path="/courses" />
             <Route element={<CourseVideos />} path="/course-videos" />
             <Route element={<Tests />} path="/tests" />
+            <Route path="/tests/:testType/:id" element={<TestTopics />} />
             <Route element={<Assignments />} path="/assignments" />
             <Route element={<Profile />} path="/profile" />
           </Routes>

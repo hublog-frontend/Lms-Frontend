@@ -1,12 +1,26 @@
 import React from "react";
-import { Row, Col } from "antd";
+import { useNavigate } from "react-router-dom";
+import { Row, Col, Divider } from "antd";
 import TestImage from "../../assets/test-B9eTwMz3.png";
 import MNCImage from "../../assets/mncs.png";
 import InfosysImage from "../../assets/infosys2.png";
 import "./styles.css";
-import { Divider } from "antd";
 
 export default function Tests() {
+  const navigate = useNavigate();
+  const topicsData = [
+    {
+      id: 1,
+      name: "MNC Interview Cracker",
+      image: <img src={MNCImage} className="tests_ondemand_cards_image" />,
+    },
+    {
+      id: 2,
+      name: "Infosys Interview Cracker",
+      image: <img src={InfosysImage} className="tests_ondemand_cards_image" />,
+    },
+  ];
+
   return (
     <div>
       <p className="common_heading">Tests</p>
@@ -116,17 +130,21 @@ export default function Tests() {
       <p className="tests_ondemand_heading">On Demand - Topic Tests</p>
 
       <div className="tests_ondemand_cards_main_container">
-        <div className="tests_ondemand_cards">
-          <img src={MNCImage} className="tests_ondemand_cards_image" />
-          <p className="tests_ondemand_cards_names">MNC Interview Cracker</p>
-        </div>
-
-        <div className="tests_ondemand_cards">
-          <img src={InfosysImage} className="tests_ondemand_cards_image" />
-          <p className="tests_ondemand_cards_names">
-            Infosys Interview Cracker
-          </p>
-        </div>
+        {topicsData.map((item, index) => {
+          return (
+            <React.Fragment key={index}>
+              <div
+                className="tests_ondemand_cards"
+                onClick={() => {
+                  navigate(`/tests/onDemandTests/675786876`);
+                }}
+              >
+                {item.image}
+                <p className="tests_ondemand_cards_names">{item.name}</p>
+              </div>
+            </React.Fragment>
+          );
+        })}
       </div>
     </div>
   );

@@ -1,25 +1,40 @@
+.loginpage_main_wrapper {
+  overflow: hidden;
+}
+.loginpage_row {
+  min-height: 100vh;
+}
 .loginpage_logo_container {
   position: absolute;
-  top: 13%;
-  left: 8%;
+  top: 60px;
+  left: 80px;
+  z-index: 10;
 }
 .loginpage_logo {
   width: 120px;
-  margin-bottom: 10px;
+  height: auto;
 }
 .loginpage_left_maincontainer {
   position: relative;
   background-color: #4052e6;
-  height: 100vh;
-  display: flex;
-  /* justify-content: center; */
+  min-height: 100vh;
+  display: flex !important;
   align-items: center;
-  padding: 0px 80px 0px 80px;
+  justify-content: center;
+  padding: 60px 80px;
+}
+.loginpage_left_content {
+  width: 100%;
+  max-width: 600px;
 }
 .loginpage_title {
   color: #fff;
-  margin-top: 0px;
-  margin-bottom: 0px;
+  margin: 0;
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 1.2;
+  width: max-content;
+  text-overflow: ellipsis;
 }
 .loginpage_cards_container {
   display: flex;
@@ -27,16 +42,16 @@
   margin-top: 40px;
 }
 .loginpage_cards {
-  background-color: #ffffff1a;
+  background-color: rgba(255, 255, 255, 0.1);
   border-radius: 1rem;
   padding: 1.5rem;
   flex: 1;
-  position: relative;
-  -webkit-backdrop-filter: blur(5px);
-  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 .loginpage_cards_icon_container {
-  background-color: #fff3;
+  background-color: rgba(255, 255, 255, 0.2);
   width: 48px;
   height: 48px;
   border-radius: 0.5rem;
@@ -51,85 +66,137 @@
   font-size: 1.25rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
-  position: relative;
 }
 .loginpage_cards_description {
-  color: #fffc;
-  font-size: 13.5px;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.875rem;
   line-height: 1.5;
 }
+
 .loginpage_right_maincontainer {
-  width: 100%;
-  max-width: 420px;
-  margin: 0 auto;
-  padding: 2rem;
-  display: flex;
+  background-color: #fff;
+  min-height: 100vh;
+  display: flex !important;
   justify-content: center;
   align-items: center;
+  padding: 40px;
+}
+.loginpage_right_content {
+  width: 100%;
+  max-width: 400px;
 }
 .loginpage_login_heading {
-  font-weight: 600;
-  font-size: 2rem;
+  font-weight: 700;
+  font-size: 2.25rem;
   text-align: center;
+  color: #111827;
+  margin-bottom: 0.5rem;
 }
 .loginpage_description {
   color: #6b7280;
-  font-size: 14px;
+  font-size: 0.95rem;
   line-height: 1.6;
   text-align: center;
-  margin-top: 10px;
+  margin-bottom: 2rem;
 }
 .loginpage_input_field {
-  height: 48px !important;
-  padding: 0px 12px !important;
-}
-.loginpage_input_field.ant-input-affix-wrapper > input.ant-input {
-  padding: 10px !important;
+  height: 50px !important;
+  border-radius: 0.5rem !important;
 }
 .loginpage_input_field:hover {
   border-color: #2160ad !important;
 }
 .loginpage_inputfield_error_container {
-  position: absolute;
-  color: #d32f2f;
-  font-size: 12px;
-  bottom: -21px;
+  color: #ef4444;
+  font-size: 0.75rem;
+  margin-top: 4px;
+  height: 20px;
 }
 .loginpage_forgotpassword_container {
   display: flex;
-  align-items: center;
-  justify-content: end;
-  margin-top: 12px;
-  font-size: 13px;
-  color: #3b42e4;
+  justify-content: flex-end;
+  margin-top: 1rem;
 }
 .loginpage_forgotpassword {
-  cursor: pointer;
-}
-.loginpage_submitbutton {
-  width: 100%;
-  background-color: #3b42e4;
-  color: #fff;
-  border: none;
-  border-radius: 0.5rem;
-  padding: 1rem;
-  font-size: 0.95rem;
+  color: #3b42e4;
+  font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.2s;
-  margin-top: 24px;
 }
+.loginpage_submitbutton,
 .loginpage_loading_submitbutton {
   width: 100%;
   background-color: #3b42e4;
   color: #fff;
   border: none;
   border-radius: 0.5rem;
-  padding: 1rem;
-  font-size: 0.95rem;
-  font-weight: 500;
-  cursor: default;
-  transition: background-color 0.2s;
-  margin-top: 24px;
+  padding: 0.875rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 2rem;
+  transition: all 0.2s;
+}
+.loginpage_submitbutton:hover {
+  background-color: #2d33c8;
+  transform: translateY(-1px);
+}
+.loginpage_loading_submitbutton {
   opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Tablet and below */
+@media (max-width: 1200px) {
+  .loginpage_left_maincontainer {
+    padding: 60px 40px;
+  }
+  .loginpage_logo_container {
+    left: 40px;
+  }
+}
+
+@media (max-width: 991px) {
+  .loginpage_left_maincontainer {
+    min-height: auto;
+    padding: 80px 24px;
+  }
+  .loginpage_logo_container {
+    position: relative;
+    top: 0;
+    left: 0;
+    margin-bottom: 40px;
+    text-align: center;
+  }
+  .loginpage_title {
+    text-align: center;
+    font-size: 2.5rem;
+  }
+  .loginpage_cards_container {
+    flex-direction: column;
+    align-items: center;
+    padding: 0px 16px;
+  }
+  .loginpage_cards {
+    width: 100%;
+  }
+  .loginpage_right_maincontainer {
+    min-height: auto;
+    padding: 60px 24px;
+  }
+}
+
+@media (max-width: 575px) {
+  .loginpage_title {
+    font-size: 2rem;
+  }
+  .loginpage_login_heading {
+    font-size: 1.875rem;
+  }
+  .loginpage_left_maincontainer {
+    padding: 60px 20px;
+  }
+  .loginpage_right_maincontainer {
+    padding: 40px 20px;
+  }
 }

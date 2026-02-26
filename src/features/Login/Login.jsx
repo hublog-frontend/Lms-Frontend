@@ -71,8 +71,8 @@ export default function Login() {
   };
 
   return (
-    <div>
-      <Row>
+    <div className="loginpage_main_wrapper">
+      <Row className="loginpage_row">
         <Col
           xs={24}
           sm={24}
@@ -80,7 +80,7 @@ export default function Login() {
           lg={12}
           className="loginpage_left_maincontainer"
         >
-          <div>
+          <div className="loginpage_left_content">
             <div className="loginpage_logo_container">
               <img src={Logo} className="loginpage_logo" />
             </div>
@@ -123,7 +123,7 @@ export default function Login() {
           lg={12}
           className="loginpage_right_maincontainer"
         >
-          <div>
+          <div className="loginpage_right_content">
             <p className="loginpage_login_heading">Login</p>
             <p className="loginpage_description">
               Enter your email and password to continue your journey with Acte
@@ -190,21 +190,10 @@ export default function Login() {
                     }
                   }}
                   value={password}
-                  error={passwordError}
-                  helperTextContainerStyle={{
-                    position: "absolute",
-                    bottom: passwordError.includes("special character")
-                      ? "-21px"
-                      : "0px",
-                    width: "100%",
-                  }}
                 />
 
                 {passwordError && (
-                  <div
-                    className="loginpage_inputfield_error_container"
-                    style={{ width: "70%", bottom: "-40px" }}
-                  >
+                  <div className="loginpage_inputfield_error_container">
                     <p>Password {passwordError}</p>
                   </div>
                 )}
