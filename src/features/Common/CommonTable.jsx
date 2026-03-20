@@ -36,7 +36,7 @@ const CommonTable = ({
   useEffect(() => {
     const timeout = setTimeout(() => {
       const sizeChanger = document.querySelector(
-        ".ant-pagination-options-size-changer"
+        ".ant-pagination-options-size-changer",
       );
       if (
         sizeChanger &&
@@ -53,7 +53,7 @@ const CommonTable = ({
       if (tableContainer) {
         const observer = new MutationObserver(() => {
           const sizeChangerUpdated = document.querySelector(
-            ".ant-pagination-options-size-changer"
+            ".ant-pagination-options-size-changer",
           );
           if (
             sizeChangerUpdated &&

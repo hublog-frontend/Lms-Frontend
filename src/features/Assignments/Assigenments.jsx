@@ -1,5 +1,6 @@
 import React from "react";
 import { Row, Col, Divider } from "antd";
+import { useNavigate } from "react-router-dom";
 import { FiLayers } from "react-icons/fi";
 import { FiCheckCircle } from "react-icons/fi";
 import { IoMdCheckmark } from "react-icons/io";
@@ -14,6 +15,8 @@ import AptitudeImage from "../../assets/apti.png";
 import { IoArrowForwardOutline } from "react-icons/io5";
 
 export default function Assignments() {
+  const navigate = useNavigate();
+
   const countCardsData = [
     {
       id: 1,
@@ -162,7 +165,12 @@ export default function Assignments() {
           return (
             <React.Fragment key={index}>
               <Col xs={24} sm={24} md={12} lg={8}>
-                <div className="assignments_cards">
+                <div
+                  className="assignments_cards"
+                  onClick={() => {
+                    navigate("/assignments/MNC Interview Cracker/67374836247");
+                  }}
+                >
                   <div className="assignment_cards_header_container">
                     <div className="assignment_cards_header_name_container">
                       {item.image}

@@ -181,7 +181,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 25px;
+  height: 34px;
   color: #333;
 }
 .commontable_pagination_prevbutton:disabled {

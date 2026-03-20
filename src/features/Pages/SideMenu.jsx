@@ -8,6 +8,7 @@ import { MdOutlineAssignment } from "react-icons/md";
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 import { FiBriefcase } from "react-icons/fi";
 import { FiBookmark } from "react-icons/fi";
+import { PiSealQuestionBold } from "react-icons/pi";
 
 export default function SideMenu() {
   const navigate = useNavigate();
@@ -26,31 +27,36 @@ export default function SideMenu() {
       path: "courses",
     },
     3: {
+      title: "Questions",
+      icon: <PiSealQuestionBold size={19} />,
+      path: "questions",
+    },
+    4: {
       title: "Tests",
       icon: <FiCheckSquare size={19} />,
       path: "tests",
     },
-    4: {
+    5: {
       title: "Assignments",
       icon: <MdOutlineAssignment size={19} />,
       path: "assignments",
     },
-    5: {
+    6: {
       title: "Company Questions",
       icon: <IoMdCheckmarkCircleOutline size={19} />,
       path: "company-questions",
     },
-    6: {
+    7: {
       title: "Jobs",
       icon: <FiBriefcase size={19} />,
       path: "jobs",
     },
-    7: {
+    8: {
       title: "Bookmarks",
       icon: <FiBookmark size={19} />,
       path: "bookmarks",
     },
-    8: {
+    9: {
       title: "Profile",
       icon: <FiUser size={19} />,
       path: "profile",

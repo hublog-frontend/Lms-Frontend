@@ -7,9 +7,7 @@ export default function CommonNodataFound({ message }) {
     <div className="nodata_main_container">
       <div className="nodata_container">
         <img src={NodataImage} className="nodata_image" />
-        <p className="nodata_message">
-          {message ? message : "No courses found"}
-        </p>
+        <p className="nodata_message">{message ? message : "No data found"}</p>
       </div>
     </div>
   );

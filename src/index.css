@@ -229,4 +229,156 @@ button:focus-visible {
   border-color: #d9d9d9 !important;
 }
 
-/* antd popcover styles */
+/* antd table styles */
+.ant-table-cell {
+  white-space: normal !important;
+}
+.users_table .ant-table-thead .ant-table-cell {
+  background-color: #e0e3e8;
+  color: white;
+}
+.ant-pagination {
+  display: flex;
+  align-items: center;
+}
+.ant-select-outlined.ant-select-status-error:not(.ant-select-disabled):not(
+    .ant-select-customize- input
+  ):not(.ant-pagination-size-changer)
+  .ant-select-selector {
+  border-color: #d32f2f !important;
+}
+.ant-pagination .ant-pagination-item-active {
+  border-color: #2160ad !important;
+}
+.ant-pagination-options-size-changer {
+  display: flex !important;
+  gap: 6px !important;
+  align-items: center !important;
+}
+.ant-pagination
+  .ant-pagination-options-size-changer.ant-select:not(
+    .ant-select-customize-input
+  )
+  .ant-select-selector {
+  font-size: 11px !important;
+  height: 29px !important;
+  width: 100px !important;
+  color: #333 !important;
+  display: flex !important;
+  align-items: center !important;
+  border-color: rgba(128, 128, 128, 0.486) !important;
+}
+.ant-select-single:not(.ant-select-customize) .ant-select-content-has-value {
+  font-size: 11px !important;
+}
+.ant-select-single.ant-select-sm
+  .ant-select-selector
+  .ant-select-selection-item {
+  line-height: 15px !important;
+}
+.ant-pagination-options-size-changer .ant-select-arrow {
+  color: #333;
+}
+
+.ant-select-outlined:not(.ant-select-disabled):not(
+    .ant-select-customize-input
+  ):not(.ant-pagination-size-changer):hover
+  .ant-select-selector {
+  border-color: #2160ad !important;
+}
+.ant-select-focused.ant-select:not(.ant-select-disabled):not(
+    .ant-select-customize-input
+  ):not(.ant-pagination-size-changer)
+  .ant-select-selector {
+  border-color: #2160ad !important;
+}
+.ant-table-thead .ant-table-cell {
+  background-color: #e0e3e8 !important;
+  font-size: 13px !important;
+  color: #333 !important;
+}
+.ant-table-wrapper .ant-table-tbody > tr > td {
+  font-size: 13px !important;
+}
+.ant-table-wrapper
+  .ant-table-container
+  table
+  > thead
+  > tr:first-child
+  > *:first-child {
+  border-start-start-radius: 3px !important;
+}
+.ant-table-wrapper
+  .ant-table-container
+  table
+  > thead
+  > tr:first-child
+  > *:last-child {
+  border-start-end-radius: 3px !important;
+}
+.ant-pagination .ant-pagination-item-active a {
+  color: #2160ad !important;
+}
+
+.ant-pagination .ant-pagination-item {
+  border: 1px solid #0057b338;
+  height: 25px !important;
+  line-height: 24px;
+  min-width: 27px;
+  font-size: 12px !important;
+}
+.ant-pagination .ant-pagination-item-active a {
+  color: #fff !important;
+}
+.ant-pagination.ant-pagination-mini .ant-pagination-item {
+  line-height: 23px !important;
+}
+.ant-pagination .ant-pagination-item-active {
+  background-color: #2160ad !important;
+  border-color: #2160ad !important;
+  width: 26px;
+  height: 26px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 4px !important;
+}
+.ant-pagination .ant-pagination-item {
+  border-color: rgba(128, 128, 128, 0.548) !important;
+  width: 26px;
+  height: 26px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 4px !important;
+}
+.ant-pagination .ant-pagination-item:not(.ant-pagination-item-active):hover {
+  background-color: none !important;
+  opacity: 0.7;
+}
+.ant-table-wrapper .ant-table.ant-table-small .ant-table-cell,
+:where(.css-dev-only-do-not-override-16dneet).ant-table-wrapper
+  .ant-table.ant-table-small
+  .ant-table-thead
+  > tr
+  > th {
+  padding: 11px !important;
+}
+.ant-checkbox-indeterminate .ant-checkbox-inner:after {
+  background-color: #2160ad !important;
+}
+.ant-pagination
+  .ant-pagination-jump-next
+  .ant-pagination-item-container
+  .ant-pagination-item-link-icon {
+  color: #2160ad !important;
+}
+.ant-pagination
+  .ant-pagination-jump-prev
+  .ant-pagination-item-container
+  .ant-pagination-item-link-icon {
+  color: #2160ad !important;
+}
+.ant-pagination .ant-pagination-options {
+  margin-inline-start: 0px !important;
+}

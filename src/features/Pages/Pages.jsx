@@ -15,6 +15,8 @@ import { Tooltip } from "antd";
 import Profile from "../Profile/Profile";
 import Assignments from "../Assignments/Assigenments";
 import TestTopics from "../Tests/TestTopics";
+import ParticularAssignments from "../Assignments/ParticularAssignments";
+import Questions from "../Questions/Questions";
 
 const { Sider, Content, Header } = Layout;
 const { useBreakpoint } = Grid;
@@ -221,10 +223,15 @@ export default function Pages() {
         >
           <Routes>
             <Route element={<Courses />} path="/courses" />
+            <Route element={<Questions />} path="/questions" />
             <Route element={<CourseVideos />} path="/course-videos" />
             <Route element={<Tests />} path="/tests" />
-            <Route path="/tests/:testType/:id" element={<TestTopics />} />
+            <Route path="/tests/:testType/:topicId" element={<TestTopics />} />
             <Route element={<Assignments />} path="/assignments" />
+            <Route
+              path="/assignments/:testType/:id"
+              element={<ParticularAssignments />}
+            />
             <Route element={<Profile />} path="/profile" />
           </Routes>
         </Content>

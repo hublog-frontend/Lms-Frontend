@@ -194,6 +194,7 @@
   align-items: center;
   min-width: 254px;
   cursor: pointer;
+  position: relative;
 }
 .tests_ondemand_cards_image {
   width: 48px;
@@ -252,7 +253,43 @@
   justify-content: space-between;
   gap: 12px;
 }
+.tests_topics_icon_container {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  opacity: 0;
+  transform: translateX(20px); /* start hidden (right side) */
+  transition: all 0.3s ease-in-out;
+}
 
+/* On hover → slide in */
+.tests_ondemand_cards:hover .tests_topics_icon_container {
+  opacity: 1;
+  transform: translateX(0);
+}
+.tests_createtopic_button_container {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+@media (min-width: 300px) and (max-width: 460px) {
+  .tests_createtopic_button_container {
+    justify-content: center;
+  }
+}
+
+.ondemand_tests_icon_container {
+  position: absolute;
+  right: 22px;
+  top: 18px;
+  opacity: 0;
+  transform: translateX(20px); /* start hidden (right side) */
+  transition: all 0.3s ease-in-out;
+}
+.test_topics_cards:hover .ondemand_tests_icon_container {
+  opacity: 1;
+  transform: translateX(0);
+}
 /* test history styles */
 .testhistory_cards {
   box-shadow: 0 1px 3px 0 #1018281a;

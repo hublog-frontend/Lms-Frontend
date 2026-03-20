@@ -1,29 +1,152 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Row, Col, Divider } from "antd";
+import { Row, Col, Divider, Button, Modal } from "antd";
 import TestImage from "../../assets/test-B9eTwMz3.png";
-import MNCImage from "../../assets/mncs.png";
-import InfosysImage from "../../assets/infosys2.png";
+import BuildingImage from "../../assets/building.png";
 import "./styles.css";
+import CommonSpinner from "../Common/CommonSpinner";
+import CommonInputField from "../Common/CommonInputField";
+import { addressValidator, formatToBackendIST } from "../Common/Validation";
+import { createTopic, getTopics } from "../ApiService/action";
+import { CommonMessage } from "../Common/CommonMessage";
+import ImageUploadCrop from "../Common/ImageUploadCrop";
+import { AiOutlineEdit } from "react-icons/ai";
+import CommonNodataFound from "../Common/CommonNoDataFound";
 
 export default function Tests() {
   const navigate = useNavigate();
-  const topicsData = [
-    {
-      id: 1,
-      name: "MNC Interview Cracker",
-      image: <img src={MNCImage} className="tests_ondemand_cards_image" />,
-    },
-    {
-      id: 2,
-      name: "Infosys Interview Cracker",
-      image: <img src={InfosysImage} className="tests_ondemand_cards_image" />,
-    },
-  ];
+  const [isOpenAddTopicModal, setIsOpenAddTopicModal] = useState(false);
+  const [editTopicId, setEditTopicId] = useState(null);
+  const [topicName, setTopicName] = useState("");
+  const [topicNameError, setTopicNameError] = useState("");
+  const [topicLogoBase64, setTopicLogoBase64] = useState("");
+  const [validationTrigger, setValidationTrigger] = useState(false);
+  const [buttonLoading, setButtonLoading] = useState(false);
+  const [topicsData, setTopicsData] = useState([]);
+
+  // const topicsData = [
+  //   {
+  //     id: 1,
+  //     name: "MNC Interview Cracker",
+  //     image: <img src={MNCImage} className="tests_ondemand_cards_image" />,
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "Infosys Interview Cracker",
+  //     image: <img src={InfosysImage} className="tests_ondemand_cards_image" />,
+  //   },
+  // ];
+
+  useEffect(() => {
+    getTopicsData();
+  }, []);
+
+  const getTopicsData = async () => {
+    try {
+      const response = await getTopics();
+      console.log("get topics response", response);
+      const topics_data = response?.data?.topics || [];
+      setTopicsData(topics_data);
+    } catch (error) {
+      setTopicsData([]);
+      console.log("get modules error", error);
+    }
+  };
+
+  const handleCreateTopic = async () => {
+    setValidationTrigger(true);
+    const topicNameValidate = addressValidator(topicName);
+
+    setTopicNameError(topicNameValidate);
+
+    if (topicNameValidate) return;
+
+    setButtonLoading(true);
+    const today = new Date();
+
+    const payload = {
+      ...(editTopicId ? { topic_id: editTopicId } : {}),
+      topic_name: topicName,
+      logo_image: topicLogoBase64,
+      created_date: formatToBackendIST(today),
+    };
+
+    try {
+      await createTopic(payload);
+      setTimeout(() => {
+        setButtonLoading(false);
+        formReset();
+        getTopicsData();
+        CommonMessage(
+          "success",
+          `Topic ${editTopicId ? "Updated" : "Created"} Successfully!`,
+        );
+      }, 300);
+    } catch (error) {
+      setButtonLoading(false);
+      CommonMessage(
+        "error",
+        error?.response?.data?.details ||
+          "Something went wrong. Try again later",
+      );
+    }
+  };
+
+  const formReset = () => {
+    setIsOpenAddTopicModal(false);
+    setTopicName("");
+    setTopicNameError("");
+    setEditTopicId(null);
+    setTopicLogoBase64("");
+    setValidationTrigger(false);
+  };
 
   return (
     <div>
-      <p className="common_heading">Tests</p>
+      {/* <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "20px",
+          marginTop: "10px",
+        }}
+      >
+        <p className="common_heading" style={{ margin: 0 }}>
+          Tests
+        </p>
+
+        <div className="courses_createmodule_button_container">
+          <button
+            className="courses_createcourse_button"
+            onClick={() => setIsOpenAddTopicModal(true)}
+          >
+            Create Topic
+          </button>
+        </div>
+      </div> */}
+      <Row>
+        <Col xs={12} sm={12} md={12} lg={12}>
+          <p className="common_heading" style={{ margin: 0 }}>
+            Tests
+          </p>
+        </Col>
+
+        <Col
+          xs={12}
+          sm={12}
+          md={12}
+          lg={12}
+          className="tests_createtopic_button_container"
+        >
+          <button
+            className="courses_createcourse_button"
+            onClick={() => setIsOpenAddTopicModal(true)}
+          >
+            Create Topic
+          </button>
+        </Col>
+      </Row>
 
       <div className="tests_banner_main_container">
         <Row gutter={16}>
@@ -129,23 +252,116 @@ export default function Tests() {
 
       <p className="tests_ondemand_heading">On Demand - Topic Tests</p>
 
-      <div className="tests_ondemand_cards_main_container">
-        {topicsData.map((item, index) => {
-          return (
-            <React.Fragment key={index}>
-              <div
-                className="tests_ondemand_cards"
-                onClick={() => {
-                  navigate(`/tests/onDemandTests/675786876`);
-                }}
-              >
-                {item.image}
-                <p className="tests_ondemand_cards_names">{item.name}</p>
-              </div>
-            </React.Fragment>
-          );
-        })}
-      </div>
+      {topicsData.length >= 1 ? (
+        <div className="tests_ondemand_cards_main_container">
+          {topicsData.map((item, index) => {
+            return (
+              <React.Fragment key={index}>
+                <div
+                  className="tests_ondemand_cards"
+                  onClick={() => {
+                    navigate(`/tests/onDemandTests/${item.id}`);
+                  }}
+                >
+                  <div className="tests_topics_icon_container">
+                    <AiOutlineEdit
+                      size={15}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setEditTopicId(item.id);
+                        setTopicName(item.topic_name);
+                        setTopicLogoBase64(item.logo_image);
+                        setIsOpenAddTopicModal(true);
+                      }}
+                    />
+                  </div>
+                  {item.logo_image ? (
+                    <img
+                      src={`data:image/png;base64,${item.logo_image}`}
+                      className="tests_ondemand_cards_image"
+                    />
+                  ) : (
+                    <img
+                      src={BuildingImage}
+                      className="tests_ondemand_cards_image"
+                    />
+                  )}
+                  <div style={{ width: "150px" }}>
+                    <p className="tests_ondemand_cards_names">
+                      {item.topic_name}
+                    </p>
+                  </div>
+                </div>
+              </React.Fragment>
+            );
+          })}
+        </div>
+      ) : (
+        <CommonNodataFound message="No topics found" />
+      )}
+
+      {/* add topic modal */}
+      <Modal
+        title={"Add New Topic"}
+        open={isOpenAddTopicModal}
+        onCancel={formReset}
+        width="35%"
+        footer={[
+          <Button
+            key="cancel"
+            onClick={formReset}
+            className="courses_addmodule_modal_cancelbutton"
+          >
+            Cancel
+          </Button>,
+
+          buttonLoading ? (
+            <Button
+              key="create"
+              type="primary"
+              className="courses_addmodule_modal_loading_createbutton"
+            >
+              <CommonSpinner />
+            </Button>
+          ) : (
+            <Button
+              key="create"
+              type="primary"
+              onClick={handleCreateTopic}
+              className="courses_addmodule_modal_createbutton"
+            >
+              {editTopicId ? "Update" : "Create"}
+            </Button>
+          ),
+        ]}
+      >
+        <div style={{ marginTop: "20px" }}>
+          <ImageUploadCrop
+            label="Logo"
+            aspect={1}
+            maxSizeMB={1}
+            required={false}
+            value={topicLogoBase64}
+            onChange={(base64) => setTopicLogoBase64(base64)}
+            onErrorChange={""} // ✅ pass setter directly
+          />{" "}
+        </div>
+
+        <div style={{ marginTop: "20px", marginBottom: "24px" }}>
+          <CommonInputField
+            label="Topic Name"
+            required={true}
+            onChange={(e) => {
+              setTopicName(e.target.value);
+              if (validationTrigger) {
+                setTopicNameError(addressValidator(e.target.value));
+              }
+            }}
+            value={topicName}
+            error={topicNameError}
+          />
+        </div>
+      </Modal>
     </div>
   );
 }

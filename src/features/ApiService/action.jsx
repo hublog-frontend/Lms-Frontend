@@ -267,3 +267,41 @@ export const deleteCertificate = async (certificate_id) => {
     throw error;
   }
 };
+
+//topic api's
+export const createTopic = async (payload) => {
+  try {
+    const response = await api.post(`/api/createTopic`, payload);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getTopics = async (payload) => {
+  try {
+    const response = await api.get(`/api/getTopics`, { params: payload });
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+//test api's
+export const getTests = async (payload) => {
+  try {
+    const response = await api.get(`/api/getTests`, { params: payload });
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const createTest = async (payload) => {
+  try {
+    const response = await api.post(`/api/createTest`, payload);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
