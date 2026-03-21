@@ -287,6 +287,14 @@ export const getTopics = async (payload) => {
   }
 };
 
+export const deleteTopic = async (topic_id) => {
+  try {
+    const response = await api.delete(`/api/deleteTopic?topic_id=${topic_id}`);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
 //test api's
 export const getTests = async (payload) => {
   try {
@@ -300,6 +308,34 @@ export const getTests = async (payload) => {
 export const createTest = async (payload) => {
   try {
     const response = await api.post(`/api/createTest`, payload);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// question api's
+export const createQuestion = async (payload) => {
+  try {
+    const response = await api.post(`/api/addQuestions`, payload);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getQuestions = async (payload) => {
+  try {
+    const response = await api.get(`/api/getQuestions`, { params: payload });
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const mapQuestionsToTest = async (payload) => {
+  try {
+    const response = await api.post(`/api/mapTestQuestions`, payload);
     return response;
   } catch (error) {
     throw error;

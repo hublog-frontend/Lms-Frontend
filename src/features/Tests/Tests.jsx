@@ -7,11 +7,12 @@ import "./styles.css";
 import CommonSpinner from "../Common/CommonSpinner";
 import CommonInputField from "../Common/CommonInputField";
 import { addressValidator, formatToBackendIST } from "../Common/Validation";
-import { createTopic, getTopics } from "../ApiService/action";
+import { createTopic, deleteTopic, getTopics } from "../ApiService/action";
 import { CommonMessage } from "../Common/CommonMessage";
 import ImageUploadCrop from "../Common/ImageUploadCrop";
-import { AiOutlineEdit } from "react-icons/ai";
+import { AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
 import CommonNodataFound from "../Common/CommonNoDataFound";
+import CommonDeleteModal from "../Common/CommonDeleteModal";
 
 export default function Tests() {
   const navigate = useNavigate();
@@ -23,6 +24,7 @@ export default function Tests() {
   const [validationTrigger, setValidationTrigger] = useState(false);
   const [buttonLoading, setButtonLoading] = useState(false);
   const [topicsData, setTopicsData] = useState([]);
+  const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
 
   // const topicsData = [
   //   {
@@ -92,8 +94,28 @@ export default function Tests() {
     }
   };
 
+  const handleDeleteTopic = async () => {
+    try {
+      await deleteTopic(editTopicId);
+      setTimeout(() => {
+        setButtonLoading(false);
+        formReset();
+        getTopicsData();
+        CommonMessage("success", `Topic Deleted Successfully!`);
+      }, 300);
+    } catch (error) {
+      setButtonLoading(false);
+      CommonMessage(
+        "error",
+        error?.response?.data?.details ||
+          "Something went wrong. Try again later",
+      );
+    }
+  };
+
   const formReset = () => {
     setIsOpenAddTopicModal(false);
+    setIsOpenDeleteModal(false);
     setTopicName("");
     setTopicNameError("");
     setEditTopicId(null);
@@ -274,6 +296,16 @@ export default function Tests() {
                         setIsOpenAddTopicModal(true);
                       }}
                     />
+
+                    <AiOutlineDelete
+                      size={15}
+                      className="action-delete-icon"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIsOpenDeleteModal(true);
+                        setEditTopicId(item.id);
+                      }}
+                    />
                   </div>
                   {item.logo_image ? (
                     <img
@@ -362,6 +394,18 @@ export default function Tests() {
           />
         </div>
       </Modal>
+
+      {/* delete modal */}
+      <CommonDeleteModal
+        open={isOpenDeleteModal}
+        onCancel={() => {
+          setIsOpenDeleteModal(false);
+          setEditTopicId(null);
+        }}
+        content="Are you sure want to delete the Topic?"
+        loading={buttonLoading}
+        onClick={handleDeleteTopic}
+      />
     </div>
   );
 }

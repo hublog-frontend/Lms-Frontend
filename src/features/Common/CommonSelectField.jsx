@@ -27,6 +27,7 @@ export default function CommonSelectField({
   onFocus,
   onBlur,
   allowClear = true,
+  isFilterField = false,
 }) {
   // ✅ label resolver (same logic you had)
   const getLabel = (option) => {
@@ -80,7 +81,11 @@ export default function CommonSelectField({
       {/* ✅ Select */}
       <Select
         className={
-          error ? "common_antd_error_inputfield" : "common_antd_inputfield"
+          isFilterField
+            ? "common_filter_antd_inputfield"
+            : error
+              ? "common_antd_error_inputfield"
+              : "common_antd_inputfield"
         }
         showSearch
         allowClear={allowClear}

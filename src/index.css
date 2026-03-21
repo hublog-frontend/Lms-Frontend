@@ -156,7 +156,9 @@ button:focus-visible {
   color: #2160ad !important;
   border-color: #2160ad !important;
 }
-
+.ant-upload-wrapper .ant-upload-drag:not(.ant-upload-disabled):hover {
+  border-color: #2160ad !important;
+}
 /* antd select field styles */
 .ant-select.ant-select-outlined:not(.ant-select-disabled).ant-select-focused {
   border-color: #2160ad !important;
@@ -198,9 +200,15 @@ button:focus-visible {
   color: rgba(0, 0, 0, 0.88) !important;
 }
 /* antd checkbox styles */
-.ant-checkbox-checked .ant-checkbox-inner {
-  background-color: #2160ad;
-  border-color: #2160ad;
+.ant-checkbox-checked {
+  background-color: #2160ad !important;
+  border-color: #2160ad !important;
+}
+.ant-checkbox-wrapper:not(.ant-checkbox-wrapper-disabled):hover .ant-checkbox {
+  border-color: #2160ad !important;
+}
+.ant-checkbox-indeterminate:after {
+  background-color: #2160ad !important;
 }
 .ant-checkbox-checked:hover .ant-checkbox-inner {
   background-color: #2160ad !important;
@@ -268,8 +276,14 @@ button:focus-visible {
   align-items: center !important;
   border-color: rgba(128, 128, 128, 0.486) !important;
 }
-.ant-select-single:not(.ant-select-customize) .ant-select-content-has-value {
+.ant-pagination
+  .ant-pagination-options
+  .ant-select-single:not(.ant-select-customize)
+  .ant-select-content {
   font-size: 11px !important;
+}
+.ant-pagination .ant-pagination-options-size-changer {
+  padding: 4px 6px;
 }
 .ant-select-single.ant-select-sm
   .ant-select-selector
@@ -381,4 +395,7 @@ button:focus-visible {
 }
 .ant-pagination .ant-pagination-options {
   margin-inline-start: 0px !important;
+}
+.ant-select.ant-select-outlined:not(.ant-select-disabled):hover {
+  border-color: #2160ad !important;
 }

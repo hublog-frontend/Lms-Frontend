@@ -40,7 +40,7 @@ const EllipsisTooltip = ({ text, smallText = false }) => {
             className={
               smallText == true
                 ? "ellipsistooltip_smalltext"
-                : "lead-ellipsis-text"
+                : "ellipsistooltip_text"
             }
             style={{ cursor: "pointer" }}
           >
@@ -53,7 +53,7 @@ const EllipsisTooltip = ({ text, smallText = false }) => {
           className={
             smallText == true
               ? "ellipsistooltip_smalltext"
-              : "lead-ellipsis-text"
+              : "ellipsistooltip_text"
           }
         >
           {text || "-"}

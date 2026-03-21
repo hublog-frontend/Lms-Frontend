@@ -12,6 +12,10 @@ import { addressValidator, formatToBackendIST } from "../Common/Validation";
 import { CommonMessage } from "../Common/CommonMessage";
 import CommonSpinner from "../Common/CommonSpinner";
 import { AiOutlineEdit } from "react-icons/ai";
+import { Drawer } from "antd";
+import { getQuestions, mapQuestionsToTest } from "../ApiService/action";
+import CommonTable from "../Common/CommonTable";
+import EllipsisTooltip from "../Common/EllipsisTooltip";
 
 export default function TestTopics() {
   const navigate = useNavigate();
@@ -23,6 +27,18 @@ export default function TestTopics() {
   const [validationTrigger, setValidationTrigger] = useState(false);
   const [buttonLoading, setButtonLoading] = useState(false);
   const [testsData, setTestsData] = useState([]);
+  const [isOpenMapQuestionDrawer, setIsOpenMapQuestionDrawer] = useState(false);
+  const [allQuestions, setAllQuestions] = useState([]);
+  const [selectedQuestionIds, setSelectedQuestionIds] = useState([]);
+  const [selectedQuestions, setSelectedQuestions] = useState([]);
+  const [drawerLoading, setDrawerLoading] = useState(false);
+  const [mappingTestId, setMappingTestId] = useState(null);
+  const [questionsPagination, setQuestionsPagination] = useState({
+    page: 1,
+    limit: 10,
+    total: 0,
+    totalPages: 0,
+  });
 
   const data = [
     { id: 1, name: "Loops" },
@@ -105,6 +121,114 @@ export default function TestTopics() {
     setButtonLoading(false);
   };
 
+  const handleOpenMapDrawer = (testId) => {
+    setMappingTestId(testId);
+    setIsOpenMapQuestionDrawer(true);
+    getAllQuestions(1, 10);
+  };
+
+  const getAllQuestions = async (page, limit) => {
+    setDrawerLoading(true);
+    const payload = {
+      page: page,
+      pageSize: limit,
+    };
+    try {
+      const response = await getQuestions(payload);
+      console.log("get questions response", response);
+      const questions_data = response?.data?.questions || [];
+      const pagination_data = response?.data?.pagination || null;
+      setAllQuestions(questions_data);
+      setQuestionsPagination({
+        page: pagination_data?.page || 1,
+        limit: pagination_data?.limit || 10,
+        total: pagination_data?.total || 0,
+        totalPages: pagination_data?.totalPages || 1,
+      });
+    } catch (error) {
+      setAllQuestions([]);
+      console.log("get questions error", error);
+    } finally {
+      setDrawerLoading(false);
+    }
+  };
+
+  const handleMapQuestionsSubmit = async () => {
+    if (selectedQuestionIds.length === 0) {
+      CommonMessage("warning", "Please select at least one question");
+      return;
+    }
+
+    setButtonLoading(true);
+    const today = new Date();
+    const payload = {
+      test_id: mappingTestId,
+      questions: selectedQuestionIds.map((question_id) => ({ question_id })),
+      created_date: formatToBackendIST(today),
+    };
+
+    try {
+      await mapQuestionsToTest(payload);
+      CommonMessage("success", "Questions mapped successfully!");
+      setIsOpenMapQuestionDrawer(false);
+      setSelectedQuestionIds([]);
+      setSelectedQuestions([]);
+    } catch (error) {
+      CommonMessage(
+        "error",
+        error?.response?.data?.details || "Failed to map questions",
+      );
+    } finally {
+      setButtonLoading(false);
+    }
+  };
+
+  const questionColumns = [
+    {
+      title: "Question",
+      dataIndex: "question",
+      key: "question",
+      render: (text) => <EllipsisTooltip text={text || "-"} />,
+    },
+    {
+      title: "Option A",
+      dataIndex: "option_a",
+      key: "option_a",
+      render: (text) => <EllipsisTooltip text={text || "-"} />,
+    },
+    {
+      title: "Option B",
+      dataIndex: "option_b",
+      key: "option_b",
+      render: (text) => <EllipsisTooltip text={text || "-"} />,
+    },
+    {
+      title: "Option C",
+      dataIndex: "option_c",
+      key: "option_c",
+      render: (text) => {
+        return <EllipsisTooltip text={text ? text : "-"} />;
+      },
+    },
+    {
+      title: "Option D",
+      dataIndex: "option_d",
+      key: "option_d",
+      render: (text) => {
+        return <EllipsisTooltip text={text ? text : "-"} />;
+      },
+    },
+    {
+      title: "Correct Answer",
+      dataIndex: "correct_answer",
+      key: "correct_answer",
+      width: 150,
+      render: (text) => {
+        return <EllipsisTooltip text={text ? text : "-"} />;
+      },
+    },
+  ];
+
   return (
     <div>
       <Row>
@@ -184,6 +308,13 @@ export default function TestTopics() {
                             }}
                           >
                             View History
+                          </button>
+
+                          <button
+                            className="coursereviews_rating_modal_btn coursereviews_rating_modal_cancelbutton"
+                            onClick={() => handleOpenMapDrawer(item.id)}
+                          >
+                            Map Question
                           </button>
 
                           <button
@@ -322,6 +453,56 @@ export default function TestTopics() {
           />
         </div>
       </Modal>
+
+      <Drawer
+        title="Map Questions to Test"
+        onClose={() => {
+          setIsOpenMapQuestionDrawer(false);
+          setSelectedQuestionIds([]);
+          setSelectedQuestions([]);
+        }}
+        open={isOpenMapQuestionDrawer}
+        size="60%"
+      >
+        <CommonTable
+          columns={questionColumns}
+          dataSource={allQuestions}
+          loading={drawerLoading}
+          checkBox="true"
+          size={"small"}
+          selectedRowKeys={selectedQuestionIds}
+          selectedDatas={(rows) => {
+            setSelectedQuestions(rows);
+            setSelectedQuestionIds(rows.map((r) => r.id));
+          }}
+          onPaginationChange={({ page, limit }) => getAllQuestions(page, limit)}
+          limit={questionsPagination.limit}
+          page_number={questionsPagination.page}
+          totalPageNumber={questionsPagination.total}
+        />
+        <div
+          style={{
+            marginTop: "20px",
+            display: "flex",
+            justifyContent: "flex-end",
+          }}
+        >
+          <Button
+            onClick={() => setIsOpenMapQuestionDrawer(false)}
+            style={{ marginRight: "10px" }}
+          >
+            Cancel
+          </Button>
+          <Button
+            type="primary"
+            loading={buttonLoading}
+            onClick={handleMapQuestionsSubmit}
+            className="courses_addmodule_modal_createbutton"
+          >
+            Submit
+          </Button>
+        </div>
+      </Drawer>
     </div>
   );
 }

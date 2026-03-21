@@ -260,6 +260,8 @@
   opacity: 0;
   transform: translateX(20px); /* start hidden (right side) */
   transition: all 0.3s ease-in-out;
+  display: flex;
+  gap: 8px;
 }
 
 /* On hover → slide in */

@@ -17,32 +17,40 @@ export default function CommonDeleteModal({
       <Modal
         open={open}
         onCancel={onCancel}
-        footer={false}
+        footer={null}
         closable={false}
-        width={420}
+        centered
+        width={400}
+        className="common_premium_modal"
       >
         <div className="common_deletemodalContainer">
-          <div className="common_deletemodal_iconContainer">
-            <MdDelete size={21} color="#db2728" />
+          <div className="common_deletemodal_header">
+            <div className="common_deletemodal_iconContainer">
+              <MdDelete size={22} color="#ef4444" />
+            </div>
+
+            <div className="common_deletemodal_content_wrapper">
+              <h3 className="common_deletemodal_confirmdeletetext">
+                {title || "Delete Item"}
+              </h3>
+              <p className="common_deletemodal_text">
+                {content || "Are you sure? This action cannot be undone."}
+              </p>
+            </div>
           </div>
-
-          <p className="common_deletemodal_confirmdeletetext">
-            {title ? title : "Confirm Delete"}
-          </p>
-
-          <p className="common_deletemodal_text">{content}</p>
 
           <div className="common_deletemodal_footerContainer">
             <Button
               className="common_deletemodal_cancelbutton"
               onClick={onCancel}
             >
-              No
+              Cancel
             </Button>
             {loading ? (
               <Button
                 className="common_deletemodal_loading_deletebutton"
                 type="primary"
+                disabled
               >
                 <CommonSpinner />
               </Button>
@@ -52,7 +60,7 @@ export default function CommonDeleteModal({
                 onClick={onClick}
                 type="primary"
               >
-                Yes
+                Delete
               </Button>
             )}
           </div>
