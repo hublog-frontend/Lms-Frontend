@@ -279,6 +279,11 @@ export default function TestTopics() {
                   <React.Fragment key={index}>
                     <Col xs={24} sm={24} md={24} lg={12}>
                       <div className="test_topics_cards">
+                        <div className="ondemand_tests_question_batch_main_container">
+                          <div className="ondemand_tests_question_batch_container">
+                            <p>5 questions</p>
+                          </div>
+                        </div>
                         <div className="ondemand_tests_icon_container">
                           <AiOutlineEdit
                             size={16}

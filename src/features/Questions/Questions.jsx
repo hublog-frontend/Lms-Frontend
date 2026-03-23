@@ -27,11 +27,19 @@ import CommonInputField from "../Common/CommonInputField";
 import CommonSelectField from "../Common/CommonSelectField";
 import CommonSpinner from "../Common/CommonSpinner";
 import { addressValidator, selectValidator } from "../Common/Validation";
-import { createQuestion, getQuestions } from "../ApiService/action";
+import {
+  createCategory,
+  createQuestion,
+  getCategories,
+  getQuestions,
+} from "../ApiService/action";
 import { CommonMessage } from "../Common/CommonMessage";
 import EllipsisTooltip from "../Common/EllipsisTooltip";
 
 export default function Questions() {
+  const { Dragger } = Upload;
+  const { Text, Title, Paragraph } = Typography;
+
   const [questionsData, setQuestionsData] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -51,10 +59,13 @@ export default function Questions() {
   const [correctAnswerError, setCorrectAnswerError] = useState("");
   const [buttonLoading, setButtonLoading] = useState(false);
   const [bulkLoading, setBulkLoading] = useState(false);
-
-  const { Dragger } = Upload;
-  const { Text, Title, Paragraph } = Typography;
-
+  //category usestates
+  const [categoriesData, setCategoriesData] = useState([]);
+  const [categoryFilterId, setCategoryFilterId] = useState(null);
+  const [isOpenCategoryModal, setIsOpenCategoryModal] = useState(false);
+  const [categoryName, setCategoryName] = useState("");
+  const [categoryNameError, setCategoryNameError] = useState("");
+  //bulk upload usesates
   const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
   const [bulkErrors, setBulkErrors] = useState([]);
   const [bulkData, setBulkData] = useState([]);
@@ -68,20 +79,26 @@ export default function Questions() {
   });
 
   useEffect(() => {
-    getQuestionsData(1, 10);
+    getQuestionsData(1, 10, null, true);
   }, []);
 
-  const getQuestionsData = async (page, limit) => {
+  const getQuestionsData = async (
+    page,
+    limit,
+    categoryId,
+    callCategoryApi = false,
+  ) => {
     setLoading(true);
     const payload = {
       page: page,
       pageSize: limit,
+      category_id: categoryId,
     };
     try {
       const response = await getQuestions(payload);
       console.log("get questions response", response);
-      const questions_data = response?.data?.questions || [];
-      const pagination_data = response?.data?.pagination || null;
+      const questions_data = response?.data?.data?.questions || [];
+      const pagination_data = response?.data?.data?.pagination || null;
       setQuestionsData(questions_data);
       setPagination({
         page: pagination_data?.page || 1,
@@ -94,6 +111,21 @@ export default function Questions() {
       console.log("get questions error", error);
     } finally {
       setLoading(false);
+      if (callCategoryApi) {
+        getCategoriesData();
+      }
+    }
+  };
+
+  const getCategoriesData = async () => {
+    try {
+      const response = await getCategories();
+      console.log("get categories response", response);
+      const categories_data = response?.data?.result || [];
+      setCategoriesData(categories_data);
+    } catch (error) {
+      setCategoriesData([]);
+      console.log("get categories error", error);
     }
   };
 
@@ -102,7 +134,7 @@ export default function Questions() {
       page: page,
       limit: limit,
     });
-    getQuestionsData(page, limit);
+    getQuestionsData(page, limit, categoryFilterId);
   };
 
   const handleDelete = (id) => {
@@ -114,6 +146,15 @@ export default function Questions() {
       title: "Question Name",
       dataIndex: "question",
       key: "question",
+      width: 180,
+      render: (text) => {
+        return <EllipsisTooltip text={text ? text : "-"} />;
+      },
+    },
+    {
+      title: "Category",
+      dataIndex: "category_name",
+      key: "category_name",
       width: 150,
       render: (text) => {
         return <EllipsisTooltip text={text ? text : "-"} />;
@@ -373,7 +414,7 @@ export default function Questions() {
           "success",
           `${bulkData.length} Questions Uploaded Successfully!`,
         );
-        fetchQuestions();
+        getQuestionsData(pagination.page, pagination.limit, categoryFilterId);
         setIsBulkModalOpen(false);
       }, 300);
     } catch (error) {
@@ -388,8 +429,38 @@ export default function Questions() {
     }
   };
 
+  const handleCreateCategory = async () => {
+    const categoryNameValidate = addressValidator(categoryName);
+
+    setCategoryNameError(categoryNameValidate);
+
+    if (categoryNameValidate) return;
+
+    setButtonLoading(true);
+    const payload = {
+      category_name: categoryName,
+    };
+
+    try {
+      await createCategory(payload);
+      setTimeout(() => {
+        CommonMessage("success", "Category Created Successfully!");
+        formReset();
+        getCategoriesData();
+      }, 300);
+    } catch (error) {
+      setButtonLoading(false);
+      CommonMessage(
+        "error",
+        error?.response?.data?.details ||
+          "Something went wrong. Try again later",
+      );
+    }
+  };
+
   const formReset = () => {
     setIsOpenAddDrawer(false);
+    setIsOpenCategoryModal(false);
     setQuestion("");
     setQuestionError("");
     setOptionA("");
@@ -403,6 +474,8 @@ export default function Questions() {
     setCorrectAnswer("");
     setCorrectAnswerText("");
     setCorrectAnswerError("");
+    setCategoryName("");
+    setCategoryNameError("");
   };
 
   return (
@@ -420,6 +493,14 @@ export default function Questions() {
           className="courses_createmodule_button_container"
         >
           {/* <div className="questions_create_button_col_inner"> */}
+          <button
+            className="courses_createcourse_button"
+            onClick={() => {
+              setIsOpenCategoryModal(true);
+            }}
+          >
+            Create Category
+          </button>
           <button
             className="courses_createcourse_button"
             onClick={handleBulkUploadClick}
@@ -444,13 +525,19 @@ export default function Questions() {
             label="Category"
             isFilterField={true}
             style={{ width: "35%" }}
+            options={categoriesData}
+            onChange={(e) => {
+              setCategoryFilterId(e.target.value);
+              getQuestionsData(1, pagination.limit, e.target.value);
+            }}
+            value={categoryFilterId}
           />
         </Col>
       </Row>
       <div className="questions_table_container">
         <CommonTable
           columns={columns}
-          scroll={{ x: 900 }}
+          scroll={{ x: 1000 }}
           dataSource={questionsData}
           size={"small"}
           loading={loading}
@@ -610,6 +697,7 @@ export default function Questions() {
         </div>
       </Modal>
 
+      {/* create question drawer */}
       <Drawer
         title="Create a new Question"
         onClose={formReset}
@@ -732,6 +820,55 @@ export default function Questions() {
           </div>
         </div>
       </Drawer>
+
+      {/* add category modal */}
+      <Modal
+        title={"Add New Category"}
+        open={isOpenCategoryModal}
+        onCancel={formReset}
+        width="35%"
+        footer={[
+          <Button
+            key="cancel"
+            onClick={formReset}
+            className="courses_addmodule_modal_cancelbutton"
+          >
+            Cancel
+          </Button>,
+
+          buttonLoading ? (
+            <Button
+              key="create"
+              type="primary"
+              className="courses_addmodule_modal_loading_createbutton"
+            >
+              <CommonSpinner />
+            </Button>
+          ) : (
+            <Button
+              key="create"
+              type="primary"
+              onClick={handleCreateCategory}
+              className="courses_addmodule_modal_createbutton"
+            >
+              Create
+            </Button>
+          ),
+        ]}
+      >
+        <div style={{ marginTop: "20px", marginBottom: "24px" }}>
+          <CommonInputField
+            label="Category Name"
+            required={true}
+            onChange={(e) => {
+              setCategoryName(e.target.value);
+              setCategoryNameError(addressValidator(e.target.value));
+            }}
+            value={categoryName}
+            error={categoryNameError}
+          />
+        </div>
+      </Modal>
     </div>
   );
 }

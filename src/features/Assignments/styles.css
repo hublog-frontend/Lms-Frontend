@@ -96,6 +96,11 @@
   border: 1px solid #eaecf0;
   border-radius: 12px;
   cursor: pointer;
+  position: relative;
+}
+.assignments_cards:hover .tests_topics_icon_container {
+  opacity: 1;
+  transform: translateX(0);
 }
 .assignment_cards_header_container {
   display: flex;

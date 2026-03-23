@@ -326,7 +326,7 @@ export const createQuestion = async (payload) => {
 
 export const getQuestions = async (payload) => {
   try {
-    const response = await api.get(`/api/getQuestions`, { params: payload });
+    const response = await api.post(`/api/getQuestions`, payload);
     return response;
   } catch (error) {
     throw error;
@@ -336,6 +336,55 @@ export const getQuestions = async (payload) => {
 export const mapQuestionsToTest = async (payload) => {
   try {
     const response = await api.post(`/api/mapTestQuestions`, payload);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// category api's
+export const createCategory = async (payload) => {
+  try {
+    const response = await api.post(`/api/addCategory`, payload);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getCategories = async (payload) => {
+  try {
+    const response = await api.get(`/api/getCategory`, { params: payload });
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const deleteCategory = async (category_id) => {
+  try {
+    const response = await api.delete(
+      `/api/deleteCategory?category_id=${category_id}`,
+    );
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+//assignment api's
+export const getAssignments = async (payload) => {
+  try {
+    const response = await api.get(`/api/getAssignments`, { params: payload });
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const createAssignment = async (payload) => {
+  try {
+    const response = await api.post(`/api/createAssignment`, payload);
     return response;
   } catch (error) {
     throw error;

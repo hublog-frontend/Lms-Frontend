@@ -26,19 +26,6 @@ export default function Tests() {
   const [topicsData, setTopicsData] = useState([]);
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
 
-  // const topicsData = [
-  //   {
-  //     id: 1,
-  //     name: "MNC Interview Cracker",
-  //     image: <img src={MNCImage} className="tests_ondemand_cards_image" />,
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "Infosys Interview Cracker",
-  //     image: <img src={InfosysImage} className="tests_ondemand_cards_image" />,
-  //   },
-  // ];
-
   useEffect(() => {
     getTopicsData();
   }, []);
@@ -121,6 +108,7 @@ export default function Tests() {
     setEditTopicId(null);
     setTopicLogoBase64("");
     setValidationTrigger(false);
+    setButtonLoading(false);
   };
 
   return (
