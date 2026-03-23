@@ -333,6 +333,17 @@ export const getQuestions = async (payload) => {
   }
 };
 
+export const deleteQuestion = async (question_id) => {
+  try {
+    const response = await api.delete(
+      `/api/deleteQuestion?question_id=${question_id}`,
+    );
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const mapQuestionsToTest = async (payload) => {
   try {
     const response = await api.post(`/api/mapTestQuestions`, payload);

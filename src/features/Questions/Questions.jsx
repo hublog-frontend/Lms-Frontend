@@ -30,6 +30,7 @@ import { addressValidator, selectValidator } from "../Common/Validation";
 import {
   createCategory,
   createQuestion,
+  deleteQuestion,
   getCategories,
   getQuestions,
 } from "../ApiService/action";
@@ -137,10 +138,6 @@ export default function Questions() {
     getQuestionsData(page, limit, categoryFilterId);
   };
 
-  const handleDelete = (id) => {
-    // Simulate deleting a question
-  };
-
   const columns = [
     {
       title: "Question Name",
@@ -216,7 +213,7 @@ export default function Questions() {
           </Tooltip>
           <Popconfirm
             title="Are you sure to delete?"
-            onConfirm={() => handleDelete(record.id)}
+            onConfirm={() => handleQuestionDelete(record.id)}
             okText="Yes"
             cancelText="No"
           >
@@ -450,6 +447,23 @@ export default function Questions() {
       }, 300);
     } catch (error) {
       setButtonLoading(false);
+      CommonMessage(
+        "error",
+        error?.response?.data?.details ||
+          "Something went wrong. Try again later",
+      );
+    }
+  };
+
+  const handleQuestionDelete = async (question_id) => {
+    // Simulate deleting a question
+    try {
+      await deleteQuestion(question_id);
+      setTimeout(() => {
+        getQuestionsData(pagination.page, pagination.limit, categoryFilterId);
+        CommonMessage("success", `Question Deleted Successfully!`);
+      }, 300);
+    } catch (error) {
       CommonMessage(
         "error",
         error?.response?.data?.details ||
