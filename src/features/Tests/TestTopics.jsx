@@ -136,8 +136,8 @@ export default function TestTopics() {
     try {
       const response = await getQuestions(payload);
       console.log("get questions response", response);
-      const questions_data = response?.data?.questions || [];
-      const pagination_data = response?.data?.pagination || null;
+      const questions_data = response?.data?.data?.questions || [];
+      const pagination_data = response?.data?.data?.pagination || null;
       setAllQuestions(questions_data);
       setQuestionsPagination({
         page: pagination_data?.page || 1,
@@ -170,6 +170,7 @@ export default function TestTopics() {
     try {
       await mapQuestionsToTest(payload);
       CommonMessage("success", "Questions mapped successfully!");
+      getTestsData();
       setIsOpenMapQuestionDrawer(false);
       setSelectedQuestionIds([]);
       setSelectedQuestions([]);
@@ -281,7 +282,7 @@ export default function TestTopics() {
                       <div className="test_topics_cards">
                         <div className="ondemand_tests_question_batch_main_container">
                           <div className="ondemand_tests_question_batch_container">
-                            <p>5 questions</p>
+                            <p>{item.total_questions} questions</p>
                           </div>
                         </div>
                         <div className="ondemand_tests_icon_container">

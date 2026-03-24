@@ -17,6 +17,9 @@ import Assignments from "../Assignments/Assigenments";
 import TestTopics from "../Tests/TestTopics";
 import ParticularAssignments from "../Assignments/ParticularAssignments";
 import Questions from "../Questions/Questions";
+import CompanyQuestionsTab from "../CompanyQuestions/CompanyQuestionsTab";
+import CompanyDocuments from "../CompanyQuestions/CompanyDocuments";
+import Bookmarks from "../Bookmarks/Bookmarks";
 
 const { Sider, Content, Header } = Layout;
 const { useBreakpoint } = Grid;
@@ -232,6 +235,15 @@ export default function Pages() {
               path="/assignments/:testType/:id"
               element={<ParticularAssignments />}
             />
+            <Route
+              element={<CompanyQuestionsTab />}
+              path="/company-questions"
+            />
+            <Route
+              element={<CompanyDocuments />}
+              path="/company-questions/:company_id"
+            />
+            <Route element={<Bookmarks />} path="/bookmarks" />
             <Route element={<Profile />} path="/profile" />
           </Routes>
         </Content>

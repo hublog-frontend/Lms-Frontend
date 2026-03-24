@@ -401,3 +401,13 @@ export const createAssignment = async (payload) => {
     throw error;
   }
 };
+
+// company question api's
+export const addCompany = async (payload) => {
+  try {
+    const response = await api.post(`/api/addCompanyQuestion`, payload);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
