@@ -353,6 +353,15 @@ export const mapQuestionsToTest = async (payload) => {
   }
 };
 
+export const getTestQuestionsData = async (test_id) => {
+  try {
+    const response = await api.get(`/api/getTestQuestions?test_id=${test_id}`);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
 // category api's
 export const createCategory = async (payload) => {
   try {
@@ -406,6 +415,24 @@ export const createAssignment = async (payload) => {
 export const addCompany = async (payload) => {
   try {
     const response = await api.post(`/api/addCompanyQuestion`, payload);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const runCode = async (payload) => {
+  try {
+    const response = await api.post(`/api/runCode`, payload);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const submitCode = async (payload) => {
+  try {
+    const response = await api.post(`/api/submitCode`, payload);
     return response;
   } catch (error) {
     throw error;

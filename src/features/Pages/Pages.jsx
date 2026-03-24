@@ -20,6 +20,7 @@ import Questions from "../Questions/Questions";
 import CompanyQuestionsTab from "../CompanyQuestions/CompanyQuestionsTab";
 import CompanyDocuments from "../CompanyQuestions/CompanyDocuments";
 import Bookmarks from "../Bookmarks/Bookmarks";
+import TestAttempt from "../TestAttempt/TestAttempt";
 
 const { Sider, Content, Header } = Layout;
 const { useBreakpoint } = Grid;
@@ -43,7 +44,8 @@ export default function Pages() {
       path.startsWith("/trainer-registration") ||
       path.startsWith("/customer-registration") ||
       path === "/success" ||
-      path === "/helpdesk"
+      path === "/helpdesk" ||
+      path.startsWith("/test-attempt")
     );
   };
 
@@ -90,6 +92,10 @@ export default function Pages() {
     return (
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route
+          path="/test-attempt/:testName/:testId"
+          element={<TestAttempt />}
+        />
       </Routes>
     );
   }

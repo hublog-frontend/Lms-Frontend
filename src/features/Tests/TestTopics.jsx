@@ -13,7 +13,12 @@ import { CommonMessage } from "../Common/CommonMessage";
 import CommonSpinner from "../Common/CommonSpinner";
 import { AiOutlineEdit } from "react-icons/ai";
 import { Drawer } from "antd";
-import { getQuestions, mapQuestionsToTest } from "../ApiService/action";
+import {
+  getCategories,
+  getQuestions,
+  mapQuestionsToTest,
+} from "../ApiService/action";
+import CommonSelectField from "../Common/CommonSelectField";
 import CommonTable from "../Common/CommonTable";
 import EllipsisTooltip from "../Common/EllipsisTooltip";
 
@@ -39,6 +44,9 @@ export default function TestTopics() {
     total: 0,
     totalPages: 0,
   });
+  const [categoriesData, setCategoriesData] = useState([]);
+  const [categoryIdFilter, setCategoryIdFilter] = useState(null);
+  const [questionTypeFilter, setQuestionTypeFilter] = useState(null);
 
   const data = [
     { id: 1, name: "Loops" },
@@ -55,7 +63,17 @@ export default function TestTopics() {
   useEffect(() => {
     console.log("paramssss", topicId);
     getTestsData();
+    getCategoriesData();
   }, []);
+
+  const getCategoriesData = async () => {
+    try {
+      const response = await getCategories();
+      setCategoriesData(response?.data?.result || []);
+    } catch (error) {
+      console.log("get categories error", error);
+    }
+  };
 
   const getTestsData = async () => {
     const payload = {
@@ -121,17 +139,35 @@ export default function TestTopics() {
     setButtonLoading(false);
   };
 
-  const handleOpenMapDrawer = (testId) => {
-    setMappingTestId(testId);
+  const handleOpenMapDrawer = (test) => {
+    setMappingTestId(test.id);
     setIsOpenMapQuestionDrawer(true);
-    getAllQuestions(1, 10);
+    setCategoryIdFilter(null);
+    setQuestionTypeFilter(null);
+
+    // Parse comma-separated question_ids already available in the test object from getTests API
+    const ids = test.question_ids
+      ? String(test.question_ids)
+          .split(",")
+          .map((id) => Number(id.trim()))
+      : [];
+    setSelectedQuestionIds(ids);
+
+    getAllQuestions(1, 10, null, null);
   };
 
-  const getAllQuestions = async (page, limit) => {
+  const getAllQuestions = async (
+    page,
+    limit,
+    catId = categoryIdFilter,
+    type = questionTypeFilter,
+  ) => {
     setDrawerLoading(true);
     const payload = {
       page: page,
       pageSize: limit,
+      category_id: catId,
+      question_type: type,
     };
     try {
       const response = await getQuestions(payload);
@@ -172,8 +208,7 @@ export default function TestTopics() {
       CommonMessage("success", "Questions mapped successfully!");
       getTestsData();
       setIsOpenMapQuestionDrawer(false);
-      setSelectedQuestionIds([]);
-      setSelectedQuestions([]);
+      setButtonLoading(false);
     } catch (error) {
       CommonMessage(
         "error",
@@ -184,51 +219,76 @@ export default function TestTopics() {
     }
   };
 
-  const questionColumns = [
-    {
-      title: "Question",
-      dataIndex: "question",
-      key: "question",
-      render: (text) => <EllipsisTooltip text={text || "-"} />,
-    },
-    {
-      title: "Option A",
-      dataIndex: "option_a",
-      key: "option_a",
-      render: (text) => <EllipsisTooltip text={text || "-"} />,
-    },
-    {
-      title: "Option B",
-      dataIndex: "option_b",
-      key: "option_b",
-      render: (text) => <EllipsisTooltip text={text || "-"} />,
-    },
-    {
-      title: "Option C",
-      dataIndex: "option_c",
-      key: "option_c",
-      render: (text) => {
-        return <EllipsisTooltip text={text ? text : "-"} />;
+  const getQuestionColumns = () => {
+    const common = [
+      {
+        title: "Question",
+        dataIndex: "question",
+        key: "question",
+        render: (text) => <EllipsisTooltip text={text || "-"} />,
       },
-    },
-    {
-      title: "Option D",
-      dataIndex: "option_d",
-      key: "option_d",
-      render: (text) => {
-        return <EllipsisTooltip text={text ? text : "-"} />;
+      {
+        title: "Type",
+        dataIndex: "question_type",
+        key: "question_type",
+        width: 100,
+        render: (text) => (
+          <span
+            style={{
+              padding: "2px 8px",
+              borderRadius: "4px",
+              fontSize: "12px",
+              background: text === "CODING" ? "#e6f7ff" : "#f6ffed",
+              color: text === "CODING" ? "#1890ff" : "#52c41a",
+              border: `1px solid ${text === "CODING" ? "#91d5ff" : "#b7eb8f"}`,
+            }}
+          >
+            {text}
+          </span>
+        ),
       },
-    },
-    {
-      title: "Correct Answer",
-      dataIndex: "correct_answer",
-      key: "correct_answer",
-      width: 150,
-      render: (text) => {
-        return <EllipsisTooltip text={text ? text : "-"} />;
+    ];
+
+    if (questionTypeFilter === "CODING") {
+      return [
+        ...common,
+        {
+          title: "Difficulty",
+          dataIndex: "difficulty",
+          key: "difficulty",
+          width: 100,
+        },
+        {
+          title: "Sample Input",
+          dataIndex: "sample_input",
+          key: "sample_input",
+        },
+      ];
+    }
+
+    return [
+      ...common,
+      {
+        title: "Option A",
+        dataIndex: "option_a",
+        key: "option_a",
+        render: (text) => <EllipsisTooltip text={text || "-"} />,
       },
-    },
-  ];
+      {
+        title: "Option B",
+        dataIndex: "option_b",
+        key: "option_b",
+        render: (text) => <EllipsisTooltip text={text || "-"} />,
+      },
+      {
+        title: "Correct Answer",
+        dataIndex: "correct_answer",
+        key: "correct_answer",
+        width: 150,
+        render: (text) => <EllipsisTooltip text={text || "-"} />,
+      },
+    ];
+  };
 
   return (
     <div>
@@ -282,7 +342,7 @@ export default function TestTopics() {
                       <div className="test_topics_cards">
                         <div className="ondemand_tests_question_batch_main_container">
                           <div className="ondemand_tests_question_batch_container">
-                            <p>{item.total_questions} questions</p>
+                            <p>{item.question_count || 0} questions</p>
                           </div>
                         </div>
                         <div className="ondemand_tests_icon_container">
@@ -318,7 +378,7 @@ export default function TestTopics() {
 
                           <button
                             className="coursereviews_rating_modal_btn coursereviews_rating_modal_cancelbutton"
-                            onClick={() => handleOpenMapDrawer(item.id)}
+                            onClick={() => handleOpenMapDrawer(item)}
                           >
                             Map Question
                           </button>
@@ -327,7 +387,11 @@ export default function TestTopics() {
                             key="create"
                             type="primary"
                             className="coursereviews_rating_modal_btn coursereviews_rating_modal_submitbutton"
-                            // onClick={handleReviewSubmit}
+                            onClick={() =>
+                              navigate(
+                                `/test-attempt/${item.test_name}/${item.id}`,
+                              )
+                            }
                           >
                             Retake Test
                           </button>
@@ -470,8 +534,37 @@ export default function TestTopics() {
         open={isOpenMapQuestionDrawer}
         size="60%"
       >
+        <Row gutter={16} style={{ marginBottom: "16px" }}>
+          <Col span={12}>
+            <CommonSelectField
+              label="Category"
+              isFilterField={true}
+              options={categoriesData}
+              onChange={(e) => {
+                setCategoryIdFilter(e.target.value);
+                getAllQuestions(1, 10, e.target.value, questionTypeFilter);
+              }}
+              value={categoryIdFilter}
+            />
+          </Col>
+          <Col span={12}>
+            <CommonSelectField
+              label="Question Type"
+              isFilterField={true}
+              options={[
+                { id: "MCQ", name: "Multiple Choice Question" },
+                { id: "CODING", name: "Coding Question" },
+              ]}
+              onChange={(e) => {
+                setQuestionTypeFilter(e.target.value);
+                getAllQuestions(1, 10, categoryIdFilter, e.target.value);
+              }}
+              value={questionTypeFilter}
+            />
+          </Col>
+        </Row>
         <CommonTable
-          columns={questionColumns}
+          columns={getQuestionColumns()}
           dataSource={allQuestions}
           loading={drawerLoading}
           checkBox="true"
@@ -481,7 +574,9 @@ export default function TestTopics() {
             setSelectedQuestions(rows);
             setSelectedQuestionIds(rows.map((r) => r.id));
           }}
-          onPaginationChange={({ page, limit }) => getAllQuestions(page, limit)}
+          onPaginationChange={({ page, limit }) =>
+            getAllQuestions(page, limit, categoryIdFilter, questionTypeFilter)
+          }
           limit={questionsPagination.limit}
           page_number={questionsPagination.page}
           totalPageNumber={questionsPagination.total}

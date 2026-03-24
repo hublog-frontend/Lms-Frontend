@@ -19,6 +19,7 @@ import {
   AiOutlineCloudUpload,
   AiOutlineFileExcel,
   AiOutlineDownload,
+  AiOutlinePlus,
 } from "react-icons/ai";
 import CommonTable from "../Common/CommonTable";
 import "./styles.css";
@@ -58,6 +59,8 @@ export default function Questions() {
   const [correctAnswer, setCorrectAnswer] = useState("");
   const [correctAnswerText, setCorrectAnswerText] = useState("");
   const [correctAnswerError, setCorrectAnswerError] = useState("");
+  const [questionCategoryId, setQuestionCategoryId] = useState(null);
+  const [questionCategoryIdError, setQuestionCategoryIdError] = useState("");
   const [buttonLoading, setButtonLoading] = useState(false);
   const [bulkLoading, setBulkLoading] = useState(false);
   //category usestates
@@ -66,6 +69,7 @@ export default function Questions() {
   const [isOpenCategoryModal, setIsOpenCategoryModal] = useState(false);
   const [categoryName, setCategoryName] = useState("");
   const [categoryNameError, setCategoryNameError] = useState("");
+  const [questionTypeFilter, setQuestionTypeFilter] = useState(null);
   //bulk upload usesates
   const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
   const [bulkErrors, setBulkErrors] = useState([]);
@@ -79,21 +83,35 @@ export default function Questions() {
     totalPages: 0,
   });
 
+  // coding question usestates
+  const [questionType, setQuestionType] = useState("MCQ");
+  const [description, setDescription] = useState("");
+  const [descriptionError, setDescriptionError] = useState("");
+  const [constraints, setConstraints] = useState("");
+  const [sampleInput, setSampleInput] = useState("");
+  const [sampleOutput, setSampleOutput] = useState("");
+  const [difficulty, setDifficulty] = useState("EASY");
+  const [testCases, setTestCases] = useState([
+    { input: "", output: "", is_sample: true },
+  ]);
+
   useEffect(() => {
-    getQuestionsData(1, 10, null, true);
+    getQuestionsData(1, 10, null, null);
+    getCategoriesData();
   }, []);
 
   const getQuestionsData = async (
     page,
     limit,
     categoryId,
-    callCategoryApi = false,
+    questionTypeFilter = null,
   ) => {
     setLoading(true);
     const payload = {
       page: page,
       pageSize: limit,
       category_id: categoryId,
+      question_type: questionTypeFilter,
     };
     try {
       const response = await getQuestions(payload);
@@ -112,9 +130,6 @@ export default function Questions() {
       console.log("get questions error", error);
     } finally {
       setLoading(false);
-      if (callCategoryApi) {
-        getCategoriesData();
-      }
     }
   };
 
@@ -135,77 +150,133 @@ export default function Questions() {
       page: page,
       limit: limit,
     });
-    getQuestionsData(page, limit, categoryFilterId);
+    getQuestionsData(page, limit, categoryFilterId, questionTypeFilter);
   };
 
-  const columns = [
-    {
-      title: "Question Name",
-      dataIndex: "question",
-      key: "question",
-      width: 180,
-      render: (text) => {
-        return <EllipsisTooltip text={text ? text : "-"} />;
+  const getColumns = () => {
+    const commonColumns = [
+      {
+        title: "Question Name",
+        dataIndex: "question",
+        key: "question",
+        width: 220,
+        render: (text) => <EllipsisTooltip text={text ? text : "-"} />,
       },
-    },
-    {
-      title: "Category",
-      dataIndex: "category_name",
-      key: "category_name",
-      width: 150,
-      render: (text) => {
-        return <EllipsisTooltip text={text ? text : "-"} />;
+      {
+        title: "Type",
+        dataIndex: "question_type",
+        key: "question_type",
+        width: 100,
+        render: (text) => (
+          <span
+            style={{
+              padding: "2px 8px",
+              borderRadius: "4px",
+              fontSize: "12px",
+              background: text === "CODING" ? "#e6f7ff" : "#f6ffed",
+              color: text === "CODING" ? "#1890ff" : "#52c41a",
+              border: `1px solid ${text === "CODING" ? "#91d5ff" : "#b7eb8f"}`,
+            }}
+          >
+            {text}
+          </span>
+        ),
       },
-    },
-    {
-      title: "Option A",
-      dataIndex: "option_a",
-      key: "option_a",
-      width: 150,
-      render: (text) => {
-        return <EllipsisTooltip text={text ? text : "-"} />;
+      {
+        title: "Category",
+        dataIndex: "category_name",
+        key: "category_name",
+        width: 150,
+        render: (text) => <EllipsisTooltip text={text ? text : "-"} />,
       },
-    },
-    {
-      title: "Option B",
-      dataIndex: "option_b",
-      key: "option_b",
-      width: 150,
-      render: (text) => {
-        return <EllipsisTooltip text={text ? text : "-"} />;
-      },
-    },
-    {
-      title: "Option C",
-      dataIndex: "option_c",
-      key: "option_c",
-      width: 150,
-      render: (text) => {
-        return <EllipsisTooltip text={text ? text : "-"} />;
-      },
-    },
-    {
-      title: "Option D",
-      dataIndex: "option_d",
-      key: "option_d",
-      width: 150,
-      render: (text) => {
-        return <EllipsisTooltip text={text ? text : "-"} />;
-      },
-    },
-    {
-      title: "Correct Answer",
-      dataIndex: "correct_answer",
-      key: "correct_answer",
-      width: 150,
-      render: (text) => {
-        return <EllipsisTooltip text={text ? text : "-"} />;
-      },
-    },
-    {
+    ];
+
+    let typeSpecificColumns = [];
+
+    if (questionTypeFilter === "CODING") {
+      typeSpecificColumns = [
+        {
+          title: "Difficulty",
+          dataIndex: "difficulty",
+          key: "difficulty",
+          width: 100,
+          render: (text) => (
+            <span
+              style={{
+                color:
+                  text === "HARD"
+                    ? "#f5222d"
+                    : text === "MEDIUM"
+                      ? "#fa8c16"
+                      : "#52c41a",
+                fontWeight: "600",
+              }}
+            >
+              {text}
+            </span>
+          ),
+        },
+        {
+          title: "Sample Input",
+          dataIndex: "sample_input",
+          key: "sample_input",
+          width: 150,
+          render: (text) => <EllipsisTooltip text={text || "-"} />,
+        },
+        {
+          title: "Sample Output",
+          dataIndex: "sample_output",
+          key: "sample_output",
+          width: 150,
+          render: (text) => <EllipsisTooltip text={text || "-"} />,
+        },
+      ];
+    } else {
+      // Show MCQ columns if filtered by MCQ OR if no filter is applied
+      typeSpecificColumns = [
+        {
+          title: "Option A",
+          dataIndex: "option_a",
+          key: "option_a",
+          width: 150,
+          render: (text) => <EllipsisTooltip text={text ? text : "-"} />,
+        },
+        {
+          title: "Option B",
+          dataIndex: "option_b",
+          key: "option_b",
+          width: 150,
+          render: (text) => <EllipsisTooltip text={text ? text : "-"} />,
+        },
+        {
+          title: "Option C",
+          dataIndex: "option_c",
+          key: "option_c",
+          width: 150,
+          render: (text) => <EllipsisTooltip text={text ? text : "-"} />,
+        },
+        {
+          title: "Option D",
+          dataIndex: "option_d",
+          key: "option_d",
+          width: 150,
+          render: (text) => <EllipsisTooltip text={text ? text : "-"} />,
+        },
+        {
+          title: "Correct Answer",
+          dataIndex: "correct_answer",
+          key: "correct_answer",
+          width: 150,
+          render: (text) => <EllipsisTooltip text={text ? text : "-"} />,
+        },
+      ];
+    }
+
+    const actionColumn = {
       title: "Action",
       key: "action",
       width: 100,
+      fixed: "right",
       render: (text, record) => (
         <Space size="middle">
           <Tooltip title="Edit Question">
@@ -225,44 +296,73 @@ export default function Questions() {
           </Popconfirm>
         </Space>
       ),
-    },
-  ];
+    };
+
+    return [...commonColumns, ...typeSpecificColumns, actionColumn];
+  };
 
   const handleSubmit = async () => {
     const questionValidate = addressValidator(question);
-    const optionAValidate = selectValidator(optionA);
-    const optionBValidate = selectValidator(optionB);
-    const optionCValidate = selectValidator(optionC);
-    const optionDValidate = selectValidator(optionD);
-    const correctAnswerValidate = selectValidator(correctAnswer);
-
+    const categoryIdValidate = selectValidator(questionCategoryId);
     setQuestionError(questionValidate);
-    setOptionAError(optionAValidate);
-    setOptionBError(optionBValidate);
-    setOptionCError(optionCValidate);
-    setOptionDError(optionDValidate);
-    setCorrectAnswerError(correctAnswerValidate);
+    setQuestionCategoryIdError(categoryIdValidate);
 
-    if (
-      questionValidate ||
-      optionAValidate ||
-      optionBValidate ||
-      optionCValidate ||
-      optionDValidate ||
-      correctAnswerValidate
-    )
-      return;
+    let isValid = !questionValidate && !categoryIdValidate;
+
+    if (questionType === "MCQ") {
+      const optionAValidate = selectValidator(optionA);
+      const optionBValidate = selectValidator(optionB);
+      const optionCValidate = selectValidator(optionC);
+      const optionDValidate = selectValidator(optionD);
+      const correctAnswerValidate = selectValidator(correctAnswer);
+
+      setOptionAError(optionAValidate);
+      setOptionBError(optionBValidate);
+      setOptionCError(optionCValidate);
+      setOptionDError(optionDValidate);
+      setCorrectAnswerError(correctAnswerValidate);
+
+      if (
+        optionAValidate ||
+        optionBValidate ||
+        optionCValidate ||
+        optionDValidate ||
+        correctAnswerValidate
+      ) {
+        isValid = false;
+      }
+    } else {
+      const descriptionValidate = addressValidator(description);
+      setDescriptionError(descriptionValidate);
+      if (descriptionValidate) {
+        isValid = false;
+      }
+    }
+
+    if (!isValid) return;
 
     setButtonLoading(true);
     const payload = {
       questions: [
         {
           question: question,
-          option_a: optionA,
-          option_b: optionB,
-          option_c: optionC,
-          option_d: optionD,
-          correct_answer: correctAnswerText,
+          question_type: questionType,
+          category_id: questionCategoryId,
+          ...(questionType === "MCQ"
+            ? {
+                option_a: optionA,
+                option_b: optionB,
+                option_c: optionC,
+                option_d: optionD,
+                correct_answer: correctAnswerText,
+              }
+            : {
+                description: description,
+                constraints: constraints,
+                difficulty: difficulty,
+                sample_input: sampleInput,
+                sample_output: sampleOutput,
+              }),
         },
       ],
     };
@@ -270,6 +370,12 @@ export default function Questions() {
       await createQuestion(payload);
       setTimeout(() => {
         CommonMessage("success", "Question Uploaded Successfully!");
+        getQuestionsData(
+          pagination.page,
+          pagination.limit,
+          categoryFilterId,
+          questionTypeFilter,
+        );
         formReset();
       }, 300);
     } catch (error) {
@@ -293,11 +399,18 @@ export default function Questions() {
     const ws = XLSX.utils.json_to_sheet([
       {
         Question: "",
+        Category: "",
+        "Question Type": "MCQ", // or "CODING"
         "Option A": "",
         "Option B": "",
         "Option C": "",
         "Option D": "",
         "Correct Answer": "",
+        Description: "",
+        Constraints: "",
+        Difficulty: "EASY",
+        "Sample Input": "",
+        "Sample Output": "",
       },
     ]);
     const wb = XLSX.utils.book_new();
@@ -329,34 +442,53 @@ export default function Questions() {
           const rowNum = index + 2;
 
           let q = row["Question"] || row["question"] || "";
+          let cat = row["Category"] || row["category"] || "";
+          let type = row["Question Type"] || row["question_type"] || "MCQ";
+          let testCasesText = row["Test Cases"] || row["test_cases"] || "";
           let a = row["Option A"] || row["option_a"] || "";
           let b = row["Option B"] || row["option_b"] || "";
           let c = row["Option C"] || row["option_c"] || "";
           let d = row["Option D"] || row["option_d"] || "";
           let ca = row["Correct Answer"] || row["correct_answer"] || "";
+          let desc = row["Description"] || row["description"] || "";
+          let constr = row["Constraints"] || row["constraints"] || "";
+          let diff = row["Difficulty"] || row["difficulty"] || "EASY";
+          let si = row["Sample Input"] || row["sample_input"] || "";
+          let so = row["Sample Output"] || row["sample_output"] || "";
 
           q = String(q).trim();
+          type = String(type).trim().toUpperCase();
           a = String(a).trim();
           b = String(b).trim();
           c = String(c).trim();
           d = String(d).trim();
           ca = String(ca).trim();
+          desc = String(desc).trim();
+          constr = String(constr).trim();
+          diff = String(diff).trim().toUpperCase();
+          si = String(si).trim();
+          so = String(so).trim();
 
           // if entirely empty, skip
           if (!q && !a && !b && !c && !d && !ca) return;
 
           let rowErrors = [];
           if (!q) rowErrors.push("Question is required");
-          if (!a) rowErrors.push("Option A is required");
-          if (!b) rowErrors.push("Option B is required");
-          if (!c) rowErrors.push("Option C is required");
-          if (!d) rowErrors.push("Option D is required");
-          if (!ca) rowErrors.push("Correct Answer is required");
 
-          if (ca && ca !== a && ca !== b && ca !== c && ca !== d) {
-            rowErrors.push(
-              "Correct Answer must exactly match the text of one of the options",
-            );
+          if (type === "MCQ") {
+            if (!a) rowErrors.push("Option A is required");
+            if (!b) rowErrors.push("Option B is required");
+            if (!c) rowErrors.push("Option C is required");
+            if (!d) rowErrors.push("Option D is required");
+            if (!ca) rowErrors.push("Correct Answer is required");
+
+            if (ca && ca !== a && ca !== b && ca !== c && ca !== d) {
+              rowErrors.push(
+                "Correct Answer must exactly match the text of one of the options",
+              );
+            }
+          } else if (type === "CODING") {
+            if (!desc) rowErrors.push("Description is required");
           }
 
           if (rowErrors.length > 0) {
@@ -366,13 +498,24 @@ export default function Questions() {
               error: rowErrors.join(", "),
             });
           } else {
+            const matchedCategory = categoriesData.find(
+              (c) => c.name.toLowerCase() === cat.toLowerCase(),
+            );
+
             formattedQuestions.push({
               question: q,
-              option_a: a,
-              option_b: b,
-              option_c: c,
-              option_d: d,
-              correct_answer: ca,
+              question_type: type,
+              category_id: matchedCategory ? matchedCategory.id : null,
+              option_a: type === "MCQ" ? a : null,
+              option_b: type === "MCQ" ? b : null,
+              option_c: type === "MCQ" ? c : null,
+              option_d: type === "MCQ" ? d : null,
+              correct_answer: type === "MCQ" ? ca : null,
+              description: type === "CODING" ? desc : null,
+              constraints: type === "CODING" ? constr : null,
+              difficulty: type === "CODING" ? diff : "EASY",
+              sample_input: type === "CODING" ? si : null,
+              sample_output: type === "CODING" ? so : null,
             });
           }
         });
@@ -411,7 +554,12 @@ export default function Questions() {
           "success",
           `${bulkData.length} Questions Uploaded Successfully!`,
         );
-        getQuestionsData(pagination.page, pagination.limit, categoryFilterId);
+        getQuestionsData(
+          pagination.page,
+          pagination.limit,
+          categoryFilterId,
+          questionTypeFilter,
+        );
         setIsBulkModalOpen(false);
       }, 300);
     } catch (error) {
@@ -475,6 +623,7 @@ export default function Questions() {
   const formReset = () => {
     setIsOpenAddDrawer(false);
     setIsOpenCategoryModal(false);
+    setButtonLoading(false);
     setQuestion("");
     setQuestionError("");
     setOptionA("");
@@ -490,6 +639,32 @@ export default function Questions() {
     setCorrectAnswerError("");
     setCategoryName("");
     setCategoryNameError("");
+    setQuestionCategoryId(null);
+    setQuestionCategoryIdError("");
+    setQuestionType("MCQ");
+    setDescription("");
+    setDescriptionError("");
+    setConstraints("");
+    setSampleInput("");
+    setSampleOutput("");
+    setDifficulty("EASY");
+    setTestCases([{ input: "", output: "", is_sample: false }]);
+  };
+
+  const handleAddTestCase = () => {
+    setTestCases([...testCases, { input: "", output: "", is_sample: false }]);
+  };
+
+  const handleRemoveTestCase = (index) => {
+    const list = [...testCases];
+    list.splice(index, 1);
+    setTestCases(list);
+  };
+
+  const handleTestCaseChange = (index, field, value) => {
+    const list = [...testCases];
+    list[index][field] = value;
+    setTestCases(list);
   };
 
   return (
@@ -533,25 +708,49 @@ export default function Questions() {
         </Col>
       </Row>
 
-      <Row>
-        <Col xs={12} sm={12} md={12} lg={12}>
+      <Row gutter={16}>
+        <Col xs={12} sm={12} md={12} lg={4}>
           <CommonSelectField
             label="Category"
             isFilterField={true}
-            style={{ width: "35%" }}
             options={categoriesData}
             onChange={(e) => {
               setCategoryFilterId(e.target.value);
-              getQuestionsData(1, pagination.limit, e.target.value);
+              getQuestionsData(
+                1,
+                pagination.limit,
+                e.target.value,
+                questionTypeFilter,
+              );
             }}
             value={categoryFilterId}
+          />
+        </Col>
+        <Col xs={12} sm={12} md={12} lg={4}>
+          <CommonSelectField
+            label="Question Type"
+            isFilterField={true}
+            options={[
+              { id: "MCQ", name: "Multiple Choice Question" },
+              { id: "CODING", name: "Coding Question" },
+            ]}
+            onChange={(e) => {
+              setQuestionTypeFilter(e.target.value);
+              getQuestionsData(
+                1,
+                pagination.limit,
+                categoryFilterId,
+                e.target.value,
+              );
+            }}
+            value={questionTypeFilter}
           />
         </Col>
       </Row>
       <div className="questions_table_container">
         <CommonTable
-          columns={columns}
-          scroll={{ x: 1000 }}
+          columns={getColumns()}
+          scroll={{ x: 1200 }}
           dataSource={questionsData}
           size={"small"}
           loading={loading}
@@ -721,8 +920,37 @@ export default function Questions() {
       >
         <div className="questions-drawer-body">
           <div className="questions-drawer-field">
+            <CommonSelectField
+              label="Question Type"
+              required={true}
+              options={[
+                { id: "MCQ", name: "Multiple Choice Question" },
+                { id: "CODING", name: "Coding Question" },
+              ]}
+              onChange={(e) => {
+                setQuestionType(e.target.value);
+              }}
+              value={questionType}
+            />
+          </div>
+
+          <div className="questions-drawer-field-mt">
+            <CommonSelectField
+              label="Category"
+              required={true}
+              options={categoriesData}
+              onChange={(e) => {
+                setQuestionCategoryId(e.target.value);
+                setQuestionCategoryIdError(selectValidator(e.target.value));
+              }}
+              value={questionCategoryId}
+              error={questionCategoryIdError}
+            />
+          </div>
+
+          <div className="questions-drawer-field-mt">
             <CommonTextArea
-              label="Question"
+              label={questionType === "MCQ" ? "Question" : "Question Title"}
               required={true}
               onChange={(e) => {
                 setQuestion(e.target.value);
@@ -732,88 +960,153 @@ export default function Questions() {
               error={questionError}
             />
           </div>
-          <div className="questions-drawer-field-mt">
-            <CommonInputField
-              label="Option A"
-              required={true}
-              onChange={(e) => {
-                setOptionA(e.target.value);
-                setCorrectAnswer("");
-                setOptionAError(selectValidator(e.target.value));
-              }}
-              value={optionA}
-              error={optionAError}
-            />
-          </div>
-          <div className="questions-drawer-field-mt">
-            <CommonInputField
-              label="Option B"
-              required={true}
-              onChange={(e) => {
-                setOptionB(e.target.value);
-                setCorrectAnswer("");
-                setOptionBError(selectValidator(e.target.value));
-              }}
-              value={optionB}
-              error={optionBError}
-            />
-          </div>
-          <div className="questions-drawer-field-mt">
-            <CommonInputField
-              label="Option C"
-              required={true}
-              onChange={(e) => {
-                setOptionC(e.target.value);
-                setCorrectAnswer("");
-                setOptionCError(selectValidator(e.target.value));
-              }}
-              value={optionC}
-              error={optionCError}
-            />
-          </div>
-          <div className="questions-drawer-field-mt">
-            <CommonInputField
-              label="Option D"
-              required={true}
-              onChange={(e) => {
-                setOptionD(e.target.value);
-                setCorrectAnswer("");
-                setOptionDError(selectValidator(e.target.value));
-              }}
-              value={optionD}
-              error={optionDError}
-            />
-          </div>
-          <div className="questions-drawer-field-mt">
-            <CommonSelectField
-              label="Correct Answer"
-              required={true}
-              options={[
-                { id: "Option A", name: "Option A" },
-                { id: "Option B", name: "Option B" },
-                { id: "Option C", name: "Option C" },
-                { id: "Option D", name: "Option D" },
-              ]}
-              onChange={(e) => {
-                const value = e.target.value;
-                const answer =
-                  value == "Option A"
-                    ? optionA
-                    : value == "Option B"
-                      ? optionB
-                      : value == "Option C"
-                        ? optionC
-                        : value == "Option D"
-                          ? optionD
-                          : "";
-                setCorrectAnswer(value);
-                setCorrectAnswerText(answer);
-                setCorrectAnswerError(selectValidator(value));
-              }}
-              value={correctAnswer}
-              error={correctAnswerError}
-            />
-          </div>
+
+          {questionType === "CODING" && (
+            <>
+              <div className="questions-drawer-field-mt">
+                <CommonTextArea
+                  label="Description"
+                  required={true}
+                  onChange={(e) => {
+                    setDescription(e.target.value);
+                    setDescriptionError(addressValidator(e.target.value));
+                  }}
+                  value={description}
+                  error={descriptionError}
+                />
+              </div>
+
+              <div className="questions-drawer-field-mt">
+                <CommonSelectField
+                  label="Difficulty"
+                  required={true}
+                  options={[
+                    { id: "EASY", name: "Easy" },
+                    { id: "MEDIUM", name: "Medium" },
+                    { id: "HARD", name: "Hard" },
+                  ]}
+                  onChange={(e) => setDifficulty(e.target.value)}
+                  value={difficulty}
+                />
+              </div>
+
+              <div className="questions-drawer-field-mt">
+                <CommonTextArea
+                  label="Constraints"
+                  onChange={(e) => setConstraints(e.target.value)}
+                  value={constraints}
+                />
+              </div>
+
+              <Row gutter={16}>
+                <Col span={12}>
+                  <div className="questions-drawer-field-mt">
+                    <CommonTextArea
+                      label="Sample Input"
+                      onChange={(e) => setSampleInput(e.target.value)}
+                      value={sampleInput}
+                    />
+                  </div>
+                </Col>
+                <Col span={12}>
+                  <div className="questions-drawer-field-mt">
+                    <CommonTextArea
+                      label="Sample Output"
+                      onChange={(e) => setSampleOutput(e.target.value)}
+                      value={sampleOutput}
+                    />
+                  </div>
+                </Col>
+              </Row>
+            </>
+          )}
+
+          {questionType === "MCQ" && (
+            <>
+              <div className="questions-drawer-field-mt">
+                <CommonInputField
+                  label="Option A"
+                  required={true}
+                  onChange={(e) => {
+                    setOptionA(e.target.value);
+                    setCorrectAnswer("");
+                    setOptionAError(selectValidator(e.target.value));
+                  }}
+                  value={optionA}
+                  error={optionAError}
+                />
+              </div>
+              <div className="questions-drawer-field-mt">
+                <CommonInputField
+                  label="Option B"
+                  required={true}
+                  onChange={(e) => {
+                    setOptionB(e.target.value);
+                    setCorrectAnswer("");
+                    setOptionBError(selectValidator(e.target.value));
+                  }}
+                  value={optionB}
+                  error={optionBError}
+                />
+              </div>
+              <div className="questions-drawer-field-mt">
+                <CommonInputField
+                  label="Option C"
+                  required={true}
+                  onChange={(e) => {
+                    setOptionC(e.target.value);
+                    setCorrectAnswer("");
+                    setOptionCError(selectValidator(e.target.value));
+                  }}
+                  value={optionC}
+                  error={optionCError}
+                />
+              </div>
+              <div className="questions-drawer-field-mt">
+                <CommonInputField
+                  label="Option D"
+                  required={true}
+                  onChange={(e) => {
+                    setOptionD(e.target.value);
+                    setCorrectAnswer("");
+                    setOptionDError(selectValidator(e.target.value));
+                  }}
+                  value={optionD}
+                  error={optionDError}
+                />
+              </div>
+              <div className="questions-drawer-field-mt">
+                <CommonSelectField
+                  label="Correct Answer"
+                  required={true}
+                  options={[
+                    { id: "Option A", name: "Option A" },
+                    { id: "Option B", name: "Option B" },
+                    { id: "Option C", name: "Option C" },
+                    { id: "Option D", name: "Option D" },
+                  ]}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    const answer =
+                      value == "Option A"
+                        ? optionA
+                        : value == "Option B"
+                          ? optionB
+                          : value == "Option C"
+                            ? optionC
+                            : value == "Option D"
+                              ? optionD
+                              : "";
+                    setCorrectAnswer(value);
+                    setCorrectAnswerText(answer);
+                    setCorrectAnswerError(selectValidator(value));
+                  }}
+                  value={correctAnswer}
+                  error={correctAnswerError}
+                />
+              </div>
+            </>
+          )}
         </div>
 
         {/* footer */}
