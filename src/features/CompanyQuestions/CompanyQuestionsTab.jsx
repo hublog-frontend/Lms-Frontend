@@ -164,6 +164,14 @@ export default function CompanyQuestionsTab() {
       if (name) formData.append("skills", name);
     });
 
+    const existingAttachmentsIds = pdfArray
+      .filter((file) => !file.originFileObj && !(file instanceof File))
+      .map((file) => file.uid);
+
+    existingAttachmentsIds.forEach((id) => {
+      formData.append("existing_attachments", id);
+    });
+
     pdfArray.forEach((file) => {
       if (file instanceof File) {
         formData.append("content", file);
