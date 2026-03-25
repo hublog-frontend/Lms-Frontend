@@ -42,7 +42,10 @@ import { skillsOptions, stateList } from "../Common/CommonArrays";
 import CommonTextArea from "../Common/CommonTextArea";
 import CommonSpinner from "../Common/CommonSpinner";
 
-pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
+// Use CDN worker for maximum compatibility across environments
+const PDF_WORKER_URL = `https://unpkg.com/pdfjs-dist@5.4.296/build/pdf.worker.min.mjs`;
+
+pdfjs.GlobalWorkerOptions.workerSrc = PDF_WORKER_URL;
 
 const { Dragger } = Upload;
 
@@ -337,6 +340,7 @@ export default function PersonalInfo({ userFulldetails }) {
 
     const pdf = await pdfjs.getDocument({
       data: arrayBuffer,
+      workerSrc: PDF_WORKER_URL,
     }).promise;
 
     let text = "";
@@ -1169,7 +1173,16 @@ export default function PersonalInfo({ userFulldetails }) {
           >
             {uploadedResume && uploadedResume.type === "application/pdf" && (
               <Document
-                file={uploadedResume}
+                file={{
+                  url: uploadedResume instanceof File
+                    ? URL.createObjectURL(uploadedResume)
+                    : uploadedResume,
+                }}
+                options={{
+                  workerSrc: PDF_WORKER_URL,
+                  cMapUrl: `https://unpkg.com/pdfjs-dist@5.4.296/cmaps/`,
+                  cMapPacked: true,
+                }}
                 onLoadSuccess={onDocumentLoadSuccess}
                 loading={<div style={{ padding: 20 }}>Loading PDF...</div>}
               >

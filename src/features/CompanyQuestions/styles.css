@@ -169,3 +169,17 @@
   color: #344054;
   width: 100%;
 }
+.company_cards_icon_container {
+  position: absolute;
+  right: 32px;
+  bottom: 24px;
+  opacity: 0;
+  transform: translateX(20px); /* start hidden (right side) */
+  transition: all 0.3s ease-in-out;
+  display: flex;
+  gap: 8px;
+}
+.company_questions_cards:hover .company_cards_icon_container {
+  opacity: 1;
+  transform: translateX(0);
+}

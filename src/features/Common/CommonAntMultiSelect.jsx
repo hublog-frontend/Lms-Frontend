@@ -19,10 +19,10 @@ export default function CommonAntdMultiSelect({
   const isTagMode = mode === "tags";
 
   const allValues = options.map(
-    (item) => item.user_id ?? item.role_id ?? item.id,
+    (item) => item.user_id ?? item.skill_id ?? item.id,
   );
 
-  const getValue = (item) => item.user_id ?? item.role_id ?? item.id;
+  const getValue = (item) => item.user_id ?? item.skill_id ?? item.id;
 
   const getLabel = (item) => {
     if (!item) return "";
@@ -90,9 +90,9 @@ export default function CommonAntdMultiSelect({
       )}
 
       <Select
-        className={
+        className={`${
           !error ? "common_antd_inputfield" : "common_antd_error_inputfield"
-        }
+        } commonMultiselectfield`}
         style={{ width: "100%" }}
         suffixIcon={<IoCaretDownSharp color="rgba(0,0,0,0.54)" />}
         mode={mode}
@@ -106,6 +106,7 @@ export default function CommonAntdMultiSelect({
         status={error ? "error" : ""}
         options={selectOptions} // ✅ new API
         optionFilterProp="label"
+        maxTagCount="responsive"
         filterOption={(input, option) =>
           String(option?.label).toLowerCase().includes(input.toLowerCase())
         }

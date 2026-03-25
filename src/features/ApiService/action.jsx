@@ -412,9 +412,31 @@ export const createAssignment = async (payload) => {
 };
 
 // company question api's
-export const addCompany = async (payload) => {
+export const getCompanySkills = async (payload) => {
   try {
-    const response = await api.post(`/api/addCompanyQuestion`, payload);
+    const response = await api.get(`/api/getSkill`, { params: payload });
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getCompanyQuestions = async (payload) => {
+  try {
+    const response = await api.get(`/api/getCompanyQuestions`, {
+      params: payload,
+    });
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const deleteCompanyQuestion = async (company_id) => {
+  try {
+    const response = await api.delete(
+      `/api/deleteCompanyQuestion?company_id=${company_id}`,
+    );
     return response;
   } catch (error) {
     throw error;

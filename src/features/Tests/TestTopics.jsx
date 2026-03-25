@@ -535,7 +535,7 @@ export default function TestTopics() {
         size="60%"
       >
         <Row gutter={16} style={{ marginBottom: "16px" }}>
-          <Col span={12}>
+          <Col span={7}>
             <CommonSelectField
               label="Category"
               isFilterField={true}
@@ -547,7 +547,7 @@ export default function TestTopics() {
               value={categoryIdFilter}
             />
           </Col>
-          <Col span={12}>
+          <Col span={7}>
             <CommonSelectField
               label="Question Type"
               isFilterField={true}
